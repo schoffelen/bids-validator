@@ -14,9 +14,7 @@ module.exports = function(dir, options) {
         console.log(validate.consoleFormat.issues(issues, options) + '\n')
         console.log(validate.consoleFormat.summary(summary, options))
       }
-      if (issues.errors.length >= 1) {
-        process.exit(1)
-      }
+      process.exit(issues.errors.length >= 1)
     })
   } else {
     console.log(colors.red(dir + ' does not exist'))
