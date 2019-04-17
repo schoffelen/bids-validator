@@ -26,6 +26,9 @@ jobs:
       - run:
           name: Smoke tests
           command: bids-validator/bin/bids-validator bids-validator/tests/data/valid_headers/ --ignoreNiftiHeaders && bids-validator/bin/bids-validator bids-validator/tests/data/valid_headers/ --ignoreNiftiHeaders --json
+      - run:
+          name: Smoke test invalid return code
+          command: if bin/bids-validator .; then false; else true; fi
   githubPagesTest:
     docker:
       - image: node:8.11.3-alpine
@@ -38,7 +41,7 @@ jobs:
       - run: apk --no-cache add rsync git python build-base openssh
       - run:
           name: Install bids-validator and bids-validator-web dependencies
-          command: yarn 
+          command: yarn
       - run:
           name: Build and export web-validator
           command: yarn web-export && rsync -av ./bids-validator-web/out/ ~/web_version
@@ -79,7 +82,7 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - '44:93:5a:f4:2b:2d:c1:8a:f2:8e:8b:e9:27:5f:93:25'
+            - "44:93:5a:f4:2b:2d:c1:8a:f2:8e:8b:e9:27:5f:93:25"
       - checkout
       - run: apk --no-cache add ca-certificates
       - run: apk --no-cache add git python build-base openssh
