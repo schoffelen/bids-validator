@@ -10,11 +10,17 @@ module.exports = function(dir, options) {
     if (options.json) {
       validate.BIDS(dir, options, function(issues, summary) {
         console.log(JSON.stringify({ issues, summary }))
+        if (issues.errors.length >= 1) {
+          process.exit(1)
+        }
       })
     } else {
       validate.BIDS(dir, options, function(issues, summary) {
         console.log(validate.consoleFormat.issues(issues, options) + '\n')
         console.log(validate.consoleFormat.summary(summary, options))
+        if (issues.errors.length >= 1) {
+          process.exit(1)
+        }
       })
     }
   } else {
