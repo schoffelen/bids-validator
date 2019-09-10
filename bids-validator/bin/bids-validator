@@ -25,6 +25,16 @@ var argv = require('yargs')
     'ignoreSymlinks',
     'Skip any symlinked directories when validating a dataset',
   )
+  .boolean('gitTreeMode')
+  .describe(
+    'gitTreeMode',
+    'Improve performance using git metadata. Does not capture changes not known to git.',
+  )
+  .option('gitRef', {
+    default: 'HEAD',
+    describe: 'Targets files at a given branch, tag, or commit hash. Use with --gitTreeMode.',
+    type: 'string',
+  })
   .option('config', {
     alias: 'c',
     describe:
