@@ -31,14 +31,16 @@ var argv = require('yargs')
     'Improve performance using git metadata. Does not capture changes not known to git.',
   )
   .option('gitRef', {
-    default: 'HEAD',
-    describe: 'Targets files at a given branch, tag, or commit hash. Use with --gitTreeMode.',
+    describe:
+      'Targets files at a given branch, tag, or commit hash. Use with --gitTreeMode.',
     type: 'string',
+    default: 'HEAD',
   })
   .option('config', {
     alias: 'c',
     describe:
       'Optional configuration file. See https://github.com/bids-standard/bids-validator for more info',
+    default: {},
   })
   .epilogue(
     'This tool checks if a dataset in a given directory is \
