@@ -1,9 +1,9 @@
 const ignore = require('ignore')
 const readFile = require('./readFile')
 const path = require('path')
+const crypto = require('crypto')
 const fs = require('fs')
 const { spawn } = require('child_process')
-const jsSHA = require('jssha')
 const isNode = typeof window === 'undefined'
 
 /**
@@ -131,9 +131,9 @@ const getGitLsTree = (cwd, gitRef) =>
   })
 
 const computeFileHash = (gitHash, path) => {
-  const shaObj = new jsSHA('SHA-1', 'TEXT')
-  shaObj.update(`${gitHash}:${path}`)
-  return shaObj.getHash('HEX')
+  const hash = crypto.createHash('sha1')
+  hash.update(`${gitHash}:${path}`)
+  return hash.digest('hex')
 }
 
 const readLsTreeLines = gitTreeLines =>
