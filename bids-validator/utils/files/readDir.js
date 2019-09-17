@@ -376,4 +376,7 @@ module.exports = {
   getFilesFromFs,
   fileArrayToObject,
   harmonizeRelativePath,
+  readCatFileLines,
+  readLsTreeLines,
+  processFiles,
 }
