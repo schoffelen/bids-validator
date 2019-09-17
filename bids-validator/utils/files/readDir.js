@@ -18,12 +18,12 @@ const isNode = typeof window === 'undefined'
  * @param {boolean} options.ignoreSymlinks enable to prevent recursively following directory symlinks
  * @returns {Promise<Object>}
  */
-async function readDir(dir, options) {
+async function readDir(dir, options = {}) {
   const ig = await getBIDSIgnore(dir)
   const fileArray = isNode
     ? await preprocessNode(path.resolve(dir), ig, options)
     : preprocessBrowser(dir, ig)
-  throw 'dev pause'
+  // throw 'dev pause'
   return fileArrayToObject(fileArray)
 }
 
@@ -97,10 +97,10 @@ function harmonizeRelativePath(path) {
 function preprocessNode(dir, ig, options) {
   const str = dir.substr(dir.lastIndexOf(path.sep) + 1) + '$'
   const rootpath = dir.replace(new RegExp(str), '')
-  console.log('DIR', dir)
-  console.log('ROOTPATH', rootpath)
-  console.log('IGNORE', ig)
-  console.log('OPTIONS', options)
+  // console.log('DIR', dir)
+  // console.log('ROOTPATH', rootpath)
+  // console.log('IGNORE', ig)
+  // console.log('OPTIONS', options)
   return options.gitTreeMode
     ? getFilesFromGitTree()
     : getFilesFromFs(dir, rootpath, ig, options)
