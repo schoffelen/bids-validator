@@ -15,10 +15,10 @@ const isNode = typeof window === 'undefined'
  * object to the callback.
  * @param {String} dir Path to read
  * @param {Object} options
- * @param {boolean} options.followSymbolicDirectories enable to recursively follow directory symlinks
+ * @param {boolean} options.ignoreSymlinks enable to prevent recursively following directory symlinks
  * @returns {Promise<Object>}
  */
-async function readDir(dir, options = { followSymbolicDirectories: true }) {
+async function readDir(dir, options) {
   const ig = await getBIDSIgnore(dir)
   const fileArray = isNode
     ? await preprocessNode(path.resolve(dir), ig, options)
@@ -97,18 +97,18 @@ function harmonizeRelativePath(path) {
 function preprocessNode(dir, ig, options) {
   const str = dir.substr(dir.lastIndexOf(path.sep) + 1) + '$'
   const rootpath = dir.replace(new RegExp(str), '')
+  console.log('DIR', dir)
+  console.log('ROOTPATH', rootpath)
+  console.log('IGNORE', ig)
+  console.log('OPTIONS', options)
+  throw 'dev pause'
   return getFiles(dir, rootpath, ig, options)
 }
 
 /**
  * Recursive helper function for 'preprocessNode'
  */
-async function getFiles(
-  dir,
-  rootPath,
-  ig,
-  options = { followSymbolicDirectories: true },
-) {
+async function getFiles(dir, rootPath, ig, options) {
   let files
   files = await fs.promises.readdir(dir, { withFileTypes: true })
   const filesAccumulator = []
@@ -138,7 +138,7 @@ async function getFiles(
         // Allow skipping symbolic links which lead to recursion
         // Disabling this is a big performance advantage on high latency
         // storage but it's a good default for versatility
-        if (options.followSymbolicDirectories) {
+        if (options.ignoreSymlinks) {
           try {
             const targetPath = await fs.promises.realpath(fullPath)
             const targetStat = await fs.promises.stat(targetPath)
