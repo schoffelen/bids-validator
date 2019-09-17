@@ -2,6 +2,8 @@ const ignore = require('ignore')
 const readFile = require('./readFile')
 const path = require('path')
 const fs = require('fs')
+const { spawn } = require('child_process')
+const jsSHA = require('jssha')
 const isNode = typeof window === 'undefined'
 
 /**
@@ -23,8 +25,8 @@ async function readDir(dir, options = {}) {
   const fileArray = isNode
     ? await preprocessNode(path.resolve(dir), ig, options)
     : preprocessBrowser(dir, ig)
-  // throw 'dev pause'
-  return fileArrayToObject(fileArray)
+  const files = fileArrayToObject(fileArray)
+  return files
 }
 
 /**
@@ -97,17 +99,137 @@ function harmonizeRelativePath(path) {
 function preprocessNode(dir, ig, options) {
   const str = dir.substr(dir.lastIndexOf(path.sep) + 1) + '$'
   const rootpath = dir.replace(new RegExp(str), '')
-  // console.log('DIR', dir)
-  // console.log('ROOTPATH', rootpath)
-  // console.log('IGNORE', ig)
-  // console.log('OPTIONS', options)
   return options.gitTreeMode
-    ? getFilesFromGitTree()
+    ? getFilesFromGitTree(dir, ig, options)
     : getFilesFromFs(dir, rootpath, ig, options)
 }
 
-async function getFilesFromGitTree() {
-  return
+const getGitLsTree = (cwd, gitRef) =>
+  new Promise((resolve, reject) => {
+    let output = ''
+    const gitProcess = spawn('git', ['ls-tree', '-l', '-r', gitRef], {
+      cwd,
+      encoding: 'utf-8',
+    })
+    gitProcess.stdout.on('data', data => {
+      output += data.toString()
+    })
+    gitProcess.stderr.on('data', reject)
+    gitProcess.on('close', () => {
+      resolve(output.trim().split('\n'))
+    })
+  })
+
+const computeFileHash = (gitHash, path) => {
+  const shaObj = new jsSHA('SHA-1', 'TEXT')
+  shaObj.update(`${gitHash}:${path}`)
+  return shaObj.getHash('HEX')
+}
+
+const readLsTreeLines = gitTreeLines =>
+  gitTreeLines
+    .map(line => {
+      const [metadata, path] = line.split('\t')
+      const [mode, objType, objHash, size] = metadata.split(/\s+/)
+      return { path, mode, objType, objHash, size }
+    })
+    .filter(
+      ({ path, mode }) =>
+        // skip git / datalad files and submodules
+        !/^\.git/.test(path) &&
+        !/^\.datalad/.test(path) &&
+        '.gitattributes' !== path &&
+        mode !== '160000',
+    )
+    .reduce(
+      (
+        // accumulator
+        { files, symlinkFilenames, symlinkObjects },
+        // git-tree line
+        { path, mode, objHash, size },
+      ) => {
+        // read ls-tree line
+        if (mode === '120000') {
+          symlinkFilenames.push(path)
+          symlinkObjects.push(objHash)
+        } else {
+          files.push({
+            path,
+            size: parseInt(size),
+            id: computeFileHash(objHash, path),
+            key: objHash,
+          })
+        }
+        return { files, symlinkFilenames, symlinkObjects }
+      },
+      { files: [], symlinkFilenames: [], symlinkObjects: [] },
+    )
+
+const getGitCatFile = (cwd, input) =>
+  new Promise((resolve, reject) => {
+    let output = ''
+    const gitProcess = spawn('git', ['cat-file', '--batch', '--buffer'], {
+      cwd,
+      encoding: 'utf-8',
+    })
+
+    // pass in symlink objects
+    gitProcess.stdin.write(input)
+    gitProcess.stdin.end()
+
+    gitProcess.stdout.on('data', data => {
+      output += data.toString()
+    })
+    gitProcess.stderr.on('data', err => {
+      reject(err)
+    })
+    gitProcess.on('close', () => {
+      resolve(output.trim().split('\n'))
+    })
+  })
+
+const readCatFileLines = (gitCatFileLines, symlinkFilenames) =>
+  gitCatFileLines
+    // even lines contain unneeded metadata
+    .filter((_, i) => i % 2 === 1)
+    .map((line, i) => {
+      const path = symlinkFilenames[i]
+      const key = line.split('/').pop()
+      const size = parseInt(key.match(/-s(\d+)/)[1])
+      const id = computeFileHash(key, path)
+      return {
+        path,
+        size,
+        id,
+        key,
+      }
+    })
+
+async function getFilesFromGitTree(dir, ig, options) {
+  const gitTreeLines = await getGitLsTree(dir, options.gitRef)
+  const { files, symlinkFilenames, symlinkObjects } = readLsTreeLines(
+    gitTreeLines,
+  )
+  const gitCatFileLines = await getGitCatFile(dir, symlinkObjects.join('\n'))
+  // example gitCatFile output:
+  //   .git/annex/objects/Mv/99/SHA256E-s54--42c98d14dbe3d066d35897a61154e39ced478cd1f0ec6159ba5f2361c4919878.json/SHA256E-s54--42c98d14dbe3d066d35897a61154e39ced478cd1f0ec6159ba5f2361c4919878.json
+  //   .git/annex/objects/QV/mW/SHA256E-s99--bbef536348750373727d3b5856398d7377e5d7e23875eed026b83d12cee6f885.json/SHA256E-s99--bbef536348750373727d3b5856398d7377e5d7e23875eed026b83d12cee6f885.json
+  const symlinkFiles = readCatFileLines(gitCatFileLines, symlinkFilenames)
+  const processedFiles = [...files, ...symlinkFiles]
+    .map(file => {
+      file.relativePath = path.normalize(`${path.sep}${file.path}`)
+      file.name = path.basename(file.path)
+      file.path = path.join(dir, file.relativePath)
+      return file
+    })
+    .filter(file => {
+      const ignore = file.relativePath
+        .split(path.sep)
+        .filter(s => s)
+        .find(segment => ig.ignores(segment))
+      return !ignore
+    })
+  return processedFiles
 }
 
 /**
