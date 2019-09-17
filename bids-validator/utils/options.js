@@ -13,8 +13,8 @@ module.exports = {
       ignoreSymlinks: Boolean(options.ignoreSymlinks),
       verbose: Boolean(options.verbose),
       gitTreeMode: Boolean(options.gitTreeMode),
-      gitRef: options.gitRef,
-      config: options.config,
+      gitRef: options.gitRef || 'HEAD',
+      config: options.config || {},
     }
     if (options.config && typeof options.config !== 'boolean') {
       this.parseConfig(options.config, function(issues, config) {
