@@ -23,7 +23,7 @@ async function readDir(dir, options) {
   const fileArray = isNode
     ? await preprocessNode(path.resolve(dir), ig, options)
     : preprocessBrowser(dir, ig)
-
+  throw 'dev pause'
   return fileArrayToObject(fileArray)
 }
 
@@ -101,14 +101,19 @@ function preprocessNode(dir, ig, options) {
   console.log('ROOTPATH', rootpath)
   console.log('IGNORE', ig)
   console.log('OPTIONS', options)
-  throw 'dev pause'
-  return getFiles(dir, rootpath, ig, options)
+  return options.gitTreeMode
+    ? getFilesFromGitTree()
+    : getFilesFromFs(dir, rootpath, ig, options)
+}
+
+async function getFilesFromGitTree() {
+  return
 }
 
 /**
  * Recursive helper function for 'preprocessNode'
  */
-async function getFiles(dir, rootPath, ig, options) {
+async function getFilesFromFs(dir, rootPath, ig, options) {
   let files
   files = await fs.promises.readdir(dir, { withFileTypes: true })
   const filesAccumulator = []
@@ -116,7 +121,7 @@ async function getFiles(dir, rootPath, ig, options) {
   const recursiveMerge = async nextRoot => {
     Array.prototype.push.apply(
       filesAccumulator,
-      await getFiles(nextRoot, rootPath, ig, options),
+      await getFilesFromFs(nextRoot, rootPath, ig, options),
     )
   }
   for (const file of files) {
@@ -138,7 +143,7 @@ async function getFiles(dir, rootPath, ig, options) {
         // Allow skipping symbolic links which lead to recursion
         // Disabling this is a big performance advantage on high latency
         // storage but it's a good default for versatility
-        if (options.ignoreSymlinks) {
+        if (!options.ignoreSymlinks) {
           try {
             const targetPath = await fs.promises.realpath(fullPath)
             const targetStat = await fs.promises.stat(targetPath)
@@ -222,7 +227,7 @@ function getBIDSIgnoreFileObjBrowser(dir) {
 module.exports = {
   default: readDir,
   readDir,
-  getFiles,
+  getFilesFromFs,
   fileArrayToObject,
   harmonizeRelativePath,
 }
