@@ -222,7 +222,9 @@ async function getFilesFromGitTree(dir, ig, options) {
   const symlinkFiles = readCatFileLines(gitCatFileLines, symlinkFilenames)
   const processedFiles = [...files, ...symlinkFiles]
     .map(file => {
-      file.relativePath = path.normalize(`${path.sep}${file.path}`)
+      file.relativePath = harmonizeRelativePath(
+        path.normalize(`${path.sep}${file.path}`)
+      )
       file.name = path.basename(file.path)
       file.path = path.join(dir, file.relativePath)
       return file
