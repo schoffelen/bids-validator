@@ -108,6 +108,12 @@ async function preprocessNode(dir, ig, options) {
   return await getFilesFromFs(dir, rootpath, ig, options)
 }
 
+/**
+ * runs command `git ls-tree -l -r <git-ref>` in given directory
+ * @param {string} cwd path to dataset directory
+ * @param {string} gitRef git ref (commit hash, ref, 'HEAD', etc)
+ * @returns {string[]}
+ */
 const getGitLsTree = (cwd, gitRef) =>
   new Promise((resolve, reject) => {
     let output = ''
@@ -169,6 +175,12 @@ const readLsTreeLines = gitTreeLines =>
       { files: [], symlinkFilenames: [], symlinkObjects: [] },
     )
 
+/**
+ * runs `git cat-file --batch --buffer` in given directory
+ * @param {string} cwd
+ * @param {string} input
+ * @returns {string[]}
+ */
 const getGitCatFile = (cwd, input) =>
   new Promise((resolve, reject) => {
     let output = ''
@@ -209,21 +221,12 @@ const readCatFileLines = (gitCatFileLines, symlinkFilenames) =>
       }
     })
 
-async function getFilesFromGitTree(dir, ig, options) {
-  const gitTreeLines = await getGitLsTree(dir, options.gitRef)
-  if (gitTreeLines.length === 1 && gitTreeLines[0] === '') return null
-  const { files, symlinkFilenames, symlinkObjects } = readLsTreeLines(
-    gitTreeLines,
-  )
-  const gitCatFileLines = await getGitCatFile(dir, symlinkObjects.join('\n'))
-  // example gitCatFile output:
-  //   .git/annex/objects/Mv/99/SHA256E-s54--42c98d14dbe3d066d35897a61154e39ced478cd1f0ec6159ba5f2361c4919878.json/SHA256E-s54--42c98d14dbe3d066d35897a61154e39ced478cd1f0ec6159ba5f2361c4919878.json
-  //   .git/annex/objects/QV/mW/SHA256E-s99--bbef536348750373727d3b5856398d7377e5d7e23875eed026b83d12cee6f885.json/SHA256E-s99--bbef536348750373727d3b5856398d7377e5d7e23875eed026b83d12cee6f885.json
-  const symlinkFiles = readCatFileLines(gitCatFileLines, symlinkFilenames)
-  const processedFiles = [...files, ...symlinkFiles]
+const processFiles = (dir, ig, ...fileLists) =>
+  fileLists
+    .reduce((allFiles, files) => [...allFiles, ...files], [])
     .map(file => {
       file.relativePath = harmonizeRelativePath(
-        path.normalize(`${path.sep}${file.path}`)
+        path.normalize(`${path.sep}${file.path}`),
       )
       file.name = path.basename(file.path)
       file.path = path.join(dir, file.relativePath)
@@ -236,7 +239,21 @@ async function getFilesFromGitTree(dir, ig, options) {
         .find(segment => ig.ignores(segment))
       return !ignore
     })
-  return processedFiles
+
+async function getFilesFromGitTree(dir, ig, options) {
+  const gitTreeLines = await getGitLsTree(dir, options.gitRef)
+  if (gitTreeLines.length === 1 && gitTreeLines[0] === '') return null
+  const { files, symlinkFilenames, symlinkObjects } = readLsTreeLines(
+    gitTreeLines,
+  )
+
+  const gitCatFileLines = await getGitCatFile(dir, symlinkObjects.join('\n'))
+  // example gitCatFile output:
+  //   .git/annex/objects/Mv/99/SHA256E-s54--42c98d14dbe3d066d35897a61154e39ced478cd1f0ec6159ba5f2361c4919878.json/SHA256E-s54--42c98d14dbe3d066d35897a61154e39ced478cd1f0ec6159ba5f2361c4919878.json
+  //   .git/annex/objects/QV/mW/SHA256E-s99--bbef536348750373727d3b5856398d7377e5d7e23875eed026b83d12cee6f885.json/SHA256E-s99--bbef536348750373727d3b5856398d7377e5d7e23875eed026b83d12cee6f885.json
+  const symlinkFiles = readCatFileLines(gitCatFileLines, symlinkFilenames)
+
+  return processFiles(dir, ig, files, symlinkFiles)
 }
 
 /**
