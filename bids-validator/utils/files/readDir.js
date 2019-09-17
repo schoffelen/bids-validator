@@ -96,12 +96,16 @@ function harmonizeRelativePath(path) {
  * 2. Filters out ignored files and folder.
  * 3. Harmonizes the 'relativePath' field
  */
-function preprocessNode(dir, ig, options) {
+async function preprocessNode(dir, ig, options) {
   const str = dir.substr(dir.lastIndexOf(path.sep) + 1) + '$'
   const rootpath = dir.replace(new RegExp(str), '')
-  return options.gitTreeMode
-    ? getFilesFromGitTree(dir, ig, options)
-    : getFilesFromFs(dir, rootpath, ig, options)
+  if (options.gitTreeMode) {
+    // if in gitTreeMode, attempt to get files from git-annex metadata
+    // before using fs
+    const files = await getFilesFromGitTree(dir, ig, options)
+    if (files !== null) return files
+  }
+  return await getFilesFromFs(dir, rootpath, ig, options)
 }
 
 const getGitLsTree = (cwd, gitRef) =>
@@ -207,6 +211,7 @@ const readCatFileLines = (gitCatFileLines, symlinkFilenames) =>
 
 async function getFilesFromGitTree(dir, ig, options) {
   const gitTreeLines = await getGitLsTree(dir, options.gitRef)
+  if (gitTreeLines.length === 1 && gitTreeLines[0] === '') return null
   const { files, symlinkFilenames, symlinkObjects } = readLsTreeLines(
     gitTreeLines,
   )
