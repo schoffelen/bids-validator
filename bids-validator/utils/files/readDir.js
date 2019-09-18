@@ -231,10 +231,7 @@ const processFiles = (dir, ig, ...fileLists) =>
       return file
     })
     .filter(file => {
-      const ignore = file.relativePath
-        .split(path.sep)
-        .filter(s => s)
-        .find(segment => ig.ignores(segment))
+      const ignore = ig.ignores(file.relativePath.slice(1))
       return !ignore
     })
     .map(file => {
