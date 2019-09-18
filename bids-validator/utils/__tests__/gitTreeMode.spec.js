@@ -100,7 +100,7 @@ describe('gitTreeMode functions', () => {
           key: 'hairpin',
         },
         {
-          path: 'derivatives/to/d',
+          path: 'derivatives/to/derivative_file',
           size: 1,
           id: 'gone',
           key: 'with_the_wind',
@@ -141,9 +141,12 @@ describe('gitTreeMode functions', () => {
         },
       ]
       const output = processFiles('/path/to/dataset', ig, filesA, filesB)
-      assert.lengthOf(output, 4, 'filters out ignored files')
-      assert.hasAnyKeys(output[0], ['relativePath', 'name'], 'adds relativePath and name to each file')
-      assert.deepEqual(output, expected)
+      const fileNames = output.map(file => file.name)
+      assert(!fileNames.includes('.DS_Store'), 'filters out ignored files')
+      assert(!fileNames.includes('derivative_file'), 'filters out ignored directories')
+      assert.deepEqual(fileNames, ['a', 'b', 'c', 'd'], 'aggregates files')
+      assert.isString(output[0].relativePath, 'adds relativePath to files')
+      assert.isString(output[1].relativePath, 'adds name to files')
     })
   })
 })
