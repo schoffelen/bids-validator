@@ -225,11 +225,7 @@ const processFiles = (dir, ig, ...fileLists) =>
   fileLists
     .reduce((allFiles, files) => [...allFiles, ...files], [])
     .map(file => {
-      file.relativePath = harmonizeRelativePath(
-        path.normalize(`${path.sep}${file.path}`),
-      )
-      file.name = path.basename(file.path)
-      file.path = path.join(dir, file.relativePath)
+      file.relativePath = path.normalize(`${path.sep}${file.path}`)
       return file
     })
     .filter(file => {
@@ -238,6 +234,12 @@ const processFiles = (dir, ig, ...fileLists) =>
         .filter(s => s)
         .find(segment => ig.ignores(segment))
       return !ignore
+    })
+    .map(file => {
+      file.relativePath = harmonizeRelativePath(file.relativePath)
+      file.name = path.basename(file.path)
+      file.path = path.join(dir, file.relativePath)
+      return file
     })
 
 async function getFilesFromGitTree(dir, ig, options) {
