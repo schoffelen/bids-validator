@@ -124,7 +124,9 @@ const getGitLsTree = (cwd, gitRef) =>
     gitProcess.stdout.on('data', data => {
       output += data.toString()
     })
-    gitProcess.stderr.on('data', reject)
+    gitProcess.stderr.on('data', () => {
+      resolve(null)
+    })
     gitProcess.on('close', () => {
       resolve(output.trim().split('\n'))
     })
@@ -196,8 +198,8 @@ const getGitCatFile = (cwd, input) =>
     gitProcess.stdout.on('data', data => {
       output += data.toString()
     })
-    gitProcess.stderr.on('data', err => {
-      reject(err)
+    gitProcess.stderr.on('data', () => {
+      resolve(null)
     })
     gitProcess.on('close', () => {
       resolve(output.trim().split('\n'))
@@ -244,7 +246,11 @@ const processFiles = (dir, ig, ...fileLists) =>
 
 async function getFilesFromGitTree(dir, ig, options) {
   const gitTreeLines = await getGitLsTree(dir, options.gitRef)
-  if (gitTreeLines.length === 1 && gitTreeLines[0] === '') return null
+  if (
+    gitTreeLines === null ||
+    (gitTreeLines.length === 1 && gitTreeLines[0] === '')
+  )
+    return null
   const { files, symlinkFilenames, symlinkObjects } = readLsTreeLines(
     gitTreeLines,
   )
