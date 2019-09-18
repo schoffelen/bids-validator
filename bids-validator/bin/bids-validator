@@ -32,9 +32,8 @@ var argv = require('yargs')
   )
   .option('gitRef', {
     describe:
-      'Targets files at a given branch, tag, or commit hash. Use with --gitTreeMode.',
+      'Targets files at a given branch, tag, or commit hash. Use with --gitTreeMode.  [default: "HEAD"]',
     type: 'string',
-    default: 'HEAD',
   })
   .implies('gitRef', 'gitTreeMode')
   .option('config', {
