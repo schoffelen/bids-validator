@@ -36,6 +36,7 @@ var argv = require('yargs')
     type: 'string',
     default: 'HEAD',
   })
+  .implies('gitRef', 'gitTreeMode')
   .option('config', {
     alias: 'c',
     describe:
