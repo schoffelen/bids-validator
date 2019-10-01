@@ -19,7 +19,7 @@ function testFile(file, annexed, dir, callback) {
       // inaccessible
       fs.lstat(file.path, function(lstatErr, lstats) {
         if (!lstatErr && lstats && lstats.isSymbolicLink()) {
-          // symlink
+          // s ymlink
           if (getOptions().remoteFiles)
             // only follow symlinks when --remoteFiles option is on
             handleRemoteAccess(file, annexed, dir, callback)

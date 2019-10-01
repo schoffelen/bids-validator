@@ -1,9 +1,7 @@
 const ignore = require('ignore')
 const readFile = require('./readFile')
 const path = require('path')
-const crypto = require('crypto')
 const fs = require('fs')
-const { spawn } = require('child_process')
 const isNode = typeof window === 'undefined'
 
 /**
@@ -99,43 +97,7 @@ function harmonizeRelativePath(path) {
 async function preprocessNode(dir, ig, options) {
   const str = dir.substr(dir.lastIndexOf(path.sep) + 1) + '$'
   const rootpath = dir.replace(new RegExp(str), '')
-  if (options.gitTreeMode) {
-    // if in gitTreeMode, attempt to get files from git-annex metadata
-    // before using fs
-    const files = await getFilesFromGitTree(dir, ig, options)
-    if (files !== null) return files
-  }
   return await getFilesFromFs(dir, rootpath, ig, options)
-}
-
-/**
- * runs command `git ls-tree -l -r <git-ref>` in given directory
- * @param {string} cwd path to dataset directory
- * @param {string} gitRef git ref (commit hash, ref, 'HEAD', etc)
- * @returns {string[]}
- */
-const getGitLsTree = (cwd, gitRef) =>
-  new Promise((resolve, reject) => {
-    let output = ''
-    const gitProcess = spawn('git', ['ls-tree', '-l', '-r', gitRef], {
-      cwd,
-      encoding: 'utf-8',
-    })
-    gitProcess.stdout.on('data', data => {
-      output += data.toString()
-    })
-    gitProcess.stderr.on('data', () => {
-      resolve(null)
-    })
-    gitProcess.on('close', () => {
-      resolve(output.trim().split('\n'))
-    })
-  })
-
-const computeFileHash = (gitHash, path) => {
-  const hash = crypto.createHash('sha1')
-  hash.update(`${gitHash}:${path}`)
-  return hash.digest('hex')
 }
 
 const readLsTreeLines = gitTreeLines =>
@@ -175,35 +137,6 @@ const readLsTreeLines = gitTreeLines =>
       { files: [], symlinkFilenames: [], symlinkObjects: [] },
     )
 
-/**
- * runs `git cat-file --batch --buffer` in given directory
- * @param {string} cwd
- * @param {string} input
- * @returns {string[]}
- */
-const getGitCatFile = (cwd, input) =>
-  new Promise(resolve => {
-    let output = ''
-    const gitProcess = spawn('git', ['cat-file', '--batch', '--buffer'], {
-      cwd,
-      encoding: 'utf-8',
-    })
-
-    // pass in symlink objects
-    gitProcess.stdin.write(input)
-    gitProcess.stdin.end()
-
-    gitProcess.stdout.on('data', data => {
-      output += data.toString()
-    })
-    gitProcess.stderr.on('data', () => {
-      resolve(null)
-    })
-    gitProcess.on('close', () => {
-      resolve(output.trim().split('\n'))
-    })
-  })
-
 const readCatFileLines = (gitCatFileLines, symlinkFilenames) =>
   gitCatFileLines
     // even lines contain unneeded metadata
@@ -235,26 +168,6 @@ const processFiles = (dir, ig, ...fileLists) =>
       file.path = path.join(dir, file.relativePath)
       return file
     })
-
-async function getFilesFromGitTree(dir, ig, options) {
-  const gitTreeLines = await getGitLsTree(dir, options.gitRef)
-  if (
-    gitTreeLines === null ||
-    (gitTreeLines.length === 1 && gitTreeLines[0] === '')
-  )
-    return null
-  const { files, symlinkFilenames, symlinkObjects } = readLsTreeLines(
-    gitTreeLines,
-  )
-
-  const gitCatFileLines = await getGitCatFile(dir, symlinkObjects.join('\n'))
-  // example gitCatFile output:
-  //   .git/annex/objects/Mv/99/SHA256E-s54--42c98d14dbe3d066d35897a61154e39ced478cd1f0ec6159ba5f2361c4919878.json/SHA256E-s54--42c98d14dbe3d066d35897a61154e39ced478cd1f0ec6159ba5f2361c4919878.json
-  //   .git/annex/objects/QV/mW/SHA256E-s99--bbef536348750373727d3b5856398d7377e5d7e23875eed026b83d12cee6f885.json/SHA256E-s99--bbef536348750373727d3b5856398d7377e5d7e23875eed026b83d12cee6f885.json
-  const symlinkFiles = readCatFileLines(gitCatFileLines, symlinkFilenames)
-
-  return processFiles(dir, ig, files, symlinkFiles)
-}
 
 /**
  * Recursive helper function for 'preprocessNode'

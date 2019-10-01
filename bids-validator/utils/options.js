@@ -14,7 +14,6 @@ module.exports = {
       ignoreNiftiHeaders: Boolean(options.ignoreNiftiHeaders),
       ignoreSymlinks: Boolean(options.ignoreSymlinks),
       verbose: Boolean(options.verbose),
-      gitTreeMode: Boolean(options.gitTreeMode),
       remoteFiles: Boolean(options.remoteFiles),
       gitRef: options.gitRef || 'HEAD',
       config: options.config || {},
