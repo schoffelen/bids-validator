@@ -3,8 +3,6 @@ import Ajv from 'ajv'
 const ajv = new Ajv({ allErrors: true })
 ajv.addMetaSchema(require('ajv/lib/refs/json-schema-draft-06.json'))
 const Issue = utils.issues.Issue
-const encode = require('./getEncoding')
-const isNode = require('../../utils/isNode')
 
 /**
  * JSON
@@ -25,11 +23,6 @@ export default function(file, jsonContentsDict, callback) {
   if (mergedDictionary) {
     issues = issues.concat(checkUnits(file, mergedDictionary))
     issues = issues.concat(compareSidecarProperties(file, mergedDictionary))
-  }
-  if (isNode) {
-    issues = issues.concat(encode.unicodeCheckNode(file))
-  } else {
-  encode.unicodeCheckBrowser(file)
   }
   callback(issues, mergedDictionary)
 }

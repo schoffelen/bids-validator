@@ -262,7 +262,7 @@ describe('BIDS example datasets ', function() {
     validate.BIDS(createDatasetFileList('utf-8_description'), options, function(
       issues,
     ) {
-      assertErrorCode(issues.errors, 115)
+      assert.equal(issues.errors.findIndex(issue => issue.code === 115), -1)
       isdone()
     })
   })
