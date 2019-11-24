@@ -257,4 +257,23 @@ describe('BIDS example datasets ', function() {
       },
     )
   })
+
+  it('should not throw an error if it encounters no non-utf-8 files', function(isdone) {
+    validate.BIDS(createDatasetFileList('utf-8_description'), options, function(
+      issues,
+    ) {
+      assertErrorCode(issues.errors, 115)
+      isdone()
+    })
+  })
+  it('should throw an error if it encounters a non-utf-8 file', function(isdone) {
+    validate.BIDS(
+      createDatasetFileList('latin-1_description'),
+      options,
+      function(issues) {
+        assertErrorCode(issues.errors, 115)
+        isdone()
+      },
+    )
+  })
 })
