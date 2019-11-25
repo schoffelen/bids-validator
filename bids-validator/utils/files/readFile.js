@@ -66,7 +66,8 @@ function readFile(file, annexed, dir) {
           checkEncoding(file, buffer, ({ isUtf8 }) => {
             if (!isUtf8) reject(new Issue({ code: 115, file }))
           })
-          return resolve(e.target.result.toString('utf8'))
+          const utf8Data = String.fromCharCode.apply(null, buffer)
+          return resolve(utf8Data)
         }
       }
       reader.readAsArrayBuffer(file)
