@@ -639,8 +639,8 @@ export default {
       'This dataset contains remote files. If you would like to validate with remote files, use the --remoteFiles option.',
   },
   115: {
-    key: 'INVALID JSON',
+    key: 'INVALID JSON ENCODING',
     severity: 'error',
-    reason: 'This JSON file is not valid Unicode.',
+    reason: 'JSON files must be valid utf-8.',
   },
 }
