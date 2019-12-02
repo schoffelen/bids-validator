@@ -259,7 +259,7 @@ describe('BIDS example datasets ', function() {
   })
 
   it('should not throw an error if it encounters no non-utf-8 files', function(isdone) {
-    validate.BIDS(createDatasetFileList('utf-8_description'), options, function(
+    validate.BIDS(createDatasetFileList('valid_dataset'), options, function(
       issues,
     ) {
       assert.equal(issues.errors.findIndex(issue => issue.code === 115), -1)
