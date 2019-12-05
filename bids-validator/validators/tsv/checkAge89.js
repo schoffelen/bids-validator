@@ -13,7 +13,7 @@ const checkAge89 = function(rows, file, issues) {
           file: file,
           evidence: line,
           line: a + 1,
-          reason: 'age of partcipant is above 89 ',
+          reason: 'age of participant is above 89 ',
           code: 56,
         }),
       )
