@@ -2,6 +2,7 @@ import utils from '../../utils'
 const Issue = utils.issues.Issue
 import checkAcqTimeFormat from './checkAcqTimeFormat'
 import checkAge89 from './checkAge89'
+import { getTsvType } from './validateTsvColumns'
 
 /**
  * TSV
@@ -28,6 +29,7 @@ const TSV = (file, contents, fileList, callback) => {
 
   const rows = contents.split('\n')
   const headers = rows[0].trim().split('\t')
+  const tsvType = getTsvType(file)
 
   // generic checks -----------------------------------------------------------
 
@@ -118,7 +120,7 @@ const TSV = (file, contents, fileList, callback) => {
   }
 
   // events.tsv
-  if (file.name.endsWith('_events.tsv')) {
+  if (tsvType === 'events') {
     if (headers.length == 0 || headers[0] !== 'onset') {
       issues.push(
         new Issue({
@@ -184,10 +186,7 @@ const TSV = (file, contents, fileList, callback) => {
 
   // participants.tsv
   let participants = null
-  if (
-    file.name === 'participants.tsv' ||
-    file.relativePath.includes('phenotype/')
-  ) {
+  if (tsvType === 'participants' || file.relativePath.includes('phenotype/')) {
     const participantIdColumn = headers.indexOf('participant_id')
     if (participantIdColumn === -1) {
       issues.push(
@@ -216,64 +215,52 @@ const TSV = (file, contents, fileList, callback) => {
   }
 
   // channels.tsv
-  if (
-    file.relativePath.includes('/meg/') &&
-    file.name.endsWith('_channels.tsv')
-  ) {
-    checkheader('name', 0, file, 71)
-    checkheader('type', 1, file, 71)
-    checkheader('units', 2, file, 71)
-  }
+  if (tsvType === 'channels') {
+    if (file.relativePath.includes('/meg/')) {
+      checkheader('name', 0, file, 71)
+      checkheader('type', 1, file, 71)
+      checkheader('units', 2, file, 71)
+    }
 
-  if (
-    file.relativePath.includes('/eeg/') &&
-    file.name.endsWith('_channels.tsv')
-  ) {
-    checkheader('name', 0, file, 71)
-    checkheader('type', 1, file, 71)
-    checkheader('units', 2, file, 71)
-  }
+    if (file.relativePath.includes('/eeg/')) {
+      checkheader('name', 0, file, 71)
+      checkheader('type', 1, file, 71)
+      checkheader('units', 2, file, 71)
+    }
 
-  if (
-    file.relativePath.includes('/ieeg/') &&
-    file.name.endsWith('_channels.tsv')
-  ) {
-    checkheader('name', 0, file, 72)
-    checkheader('type', 1, file, 72)
-    checkheader('units', 2, file, 72)
-    checkheader('low_cutoff', 3, file, 72)
-    checkheader('high_cutoff', 4, file, 72)
+    if (file.relativePath.includes('/ieeg/')) {
+      checkheader('name', 0, file, 72)
+      checkheader('type', 1, file, 72)
+      checkheader('units', 2, file, 72)
+      checkheader('low_cutoff', 3, file, 72)
+      checkheader('high_cutoff', 4, file, 72)
+    }
   }
 
   // electrodes.tsv
-  if (
-    file.relativePath.includes('/eeg/') &&
-    file.name.endsWith('_electrodes.tsv')
-  ) {
-    checkheader('name', 0, file, 96)
-    checkheader('x', 1, file, 96)
-    checkheader('y', 2, file, 96)
-    checkheader('z', 3, file, 96)
-  }
+  if (tsvType === 'electrodes') {
+    if (file.relativePath.includes('/eeg/')) {
+      checkheader('name', 0, file, 96)
+      checkheader('x', 1, file, 96)
+      checkheader('y', 2, file, 96)
+      checkheader('z', 3, file, 96)
+    }
 
-  if (
-    file.relativePath.includes('/ieeg/') &&
-    file.name.endsWith('_electrodes.tsv')
-  ) {
-    checkheader('name', 0, file, 73)
-    checkheader('x', 1, file, 73)
-    checkheader('y', 2, file, 73)
-    checkheader('z', 3, file, 73)
-    checkheader('size', 4, file, 73)
+    if (file.relativePath.includes('/ieeg/')) {
+      checkheader('name', 0, file, 73)
+      checkheader('x', 1, file, 73)
+      checkheader('y', 2, file, 73)
+      checkheader('z', 3, file, 73)
+      checkheader('size', 4, file, 73)
+    }
   }
-
   // check partcipants.tsv for age 89+
 
   if (file.name === 'participants.tsv') {
     checkAge89(rows, file, issues)
   }
 
-  if (file.name.endsWith('_scans.tsv')) {
+  if (tsvType === 'scans') {
     // check _scans.tsv for column filename
     if (!(headers.indexOf('filename') > -1)) {
       issues.push(

@@ -1,5 +1,6 @@
 import utils from '../../utils'
 import tsv from './tsv'
+import { getTsvType } from './validateTsvColumns'
 
 const validate = (
   files,
@@ -16,6 +17,7 @@ const validate = (
   let participantsTsvContent = ''
   // validate tsv
   const tsvPromises = files.map(function(file) {
+    const tsvType = getTsvType(file)
     return utils.limit(
       () =>
         new Promise((resolve, reject) => {
@@ -27,7 +29,7 @@ const validate = (
                 file: file,
                 contents: contents,
               })
-              if (file.name.endsWith('_events.tsv')) {
+              if (tsvType === 'events') {
                 events.push({
                   file: file,
                   path: file.relativePath,
@@ -40,7 +42,7 @@ const validate = (
                 stimFiles,
               ) {
                 if (participantList) {
-                  if (file.name.endsWith('participants.tsv')) {
+                  if (tsvType === 'participants') {
                     participants = {
                       list: participantList,
                       file: file,
