@@ -12,7 +12,7 @@
     return arg
   }
 
-  function unquote(str) {
+  function rmquote(str) {
     var match
     return ((match = str.match(/(['"]?)(.*)\1/)) && match[2]) || str
   }
@@ -21,15 +21,15 @@
     return !/#@/.test(line[0])
   }
 
-  function getValues(line, sep) {
-    return line.split(sep).map(function(value) {
-      var value = unquote(value)
-      var numeric = +value
-      return numeric === numeric ? numeric : value // take advantage of NaN !== NaN
+  function getValues(line, seperator) {
+    return line.split(seperator).map(function(value) {
+      var value = rmquote(value)
+      var numeric = +value //unary to type Num || NaN
+      return numeric === numeric ? numeric : value // NaN !== NaN
     })
   }
 
-  function Parser(sep, options) {
+  function Parser(seperator, options) {
     var opt = extend(
       {
         header: true,
@@ -37,15 +37,15 @@
       options,
     )
 
-    this.sep = sep
+    this.seperator = seperator
     this.header = opt.header
   }
 
   Parser.prototype.stringify = function(data) {
-    var sep = this.sep,
-      head = !!this.header,
+    var seperator = this.seperator,
+      head = !!this.header, //convert to bool
       keys = typeof data[0] === 'object' && Object.keys(data[0]),
-      header = keys && keys.join(sep),
+      header = keys && keys.join(seperator),
       output = head ? header + newLine : ''
 
     if (!data || !keys) return ''
@@ -59,24 +59,24 @@
             p.push(obj[key])
             return p
           }, [])
-          return values.join(sep)
+          return values.join(seperator)
         })
         .join(newLine)
     )
   }
 
   Parser.prototype.parse = function(tsv) {
-    var sep = this.sep,
+    var seperator = this.seperator,
       lines = tsv.split(/[\n\r]/).filter(comments),
       head = !!this.header,
-      keys = head ? getValues(lines.shift(), sep) : {}
+      keys = head ? getValues(lines.shift(), seperator) : {}
 
     if (lines.length < 1) return []
 
     return lines.reduce(function(output, line) {
       var item = head ? {} : []
       output.push(
-        getValues(line, sep).reduce(function(item, val, i) {
+        getValues(line, seperator).reduce(function(item, val, i) {
           item[keys[i] || i] = val
           return item
         }, item),
