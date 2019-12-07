@@ -1,5 +1,14 @@
+/*
+ * TSV
+ * Module for parsing TSV (and eventually other formats)
+ */
+
 (function() {
-  var newLine = '\n'
+  //defaults
+  var TSV = {}
+  var seperator = "\t"
+  var newLine = "\n"
+
 
   function extend(arg) {
     Array.prototype.slice.call(arguments, 1).forEach(function(source) {
@@ -12,6 +21,7 @@
     return arg
   }
 
+  //allow quotes
   function rmquote(str) {
     var match
     return ((match = str.match(/(['"]?)(.*)\1/)) && match[2]) || str
@@ -66,10 +76,10 @@
   }
 
   Parser.prototype.parse = function(tsv) {
-    var seperator = this.seperator,
-      lines = tsv.split(/[\n\r]/).filter(comments),
-      head = !!this.header,
-      keys = head ? getValues(lines.shift(), seperator) : {}
+    var seperator = this.seperator
+    var lines = tsv.split(/[\n\r]/).filter(comments)
+    var head = !!this.header
+    var keys = head ? getValues(lines.shift(), seperator) : {}
 
     if (lines.length < 1) return []
 
@@ -86,11 +96,6 @@
   }
 
   var TSV = new Parser('\t')
-
-  extend(TSV, {
-    TSV: TSV,
-    Parser: Parser,
-  })
 
   //expose module beyond nodejs
   if (typeof module !== 'undefined' && module.exports) {
