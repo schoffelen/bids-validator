@@ -28,7 +28,7 @@ const fullTest = (fileList, options, annexed, dir, callback) => {
   let self = BIDS
   self.options = options
 
-  let jsonContentsDict = {},
+  let jsonContentsDict = {}
     bContentsDict = {},
     events = [],
     stimuli = {

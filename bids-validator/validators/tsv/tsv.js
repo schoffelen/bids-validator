@@ -26,8 +26,9 @@ const TSV = (file, contents, fileList, callback) => {
       }),
     )
     callback(issues, null)
-    return 
+    return
   }
+
   const parsedContent = TSVParser.stringify(TSVParser.parse(contents))
   const rows = parsedContent.split('\n')
   const headers = rows[0].trim().split('\t')
