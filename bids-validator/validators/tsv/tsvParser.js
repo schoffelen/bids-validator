@@ -5,7 +5,7 @@
 
 (function() {
   //defaults
-  var TSV = {}
+  var TSVParser = {}
   var seperator = "\t"
   var newLine = "\n"
 
@@ -31,6 +31,7 @@
     return !/#@/.test(line[0])
   }
 
+  //value of each entry
   function getValues(line, seperator) {
     return line.split(seperator).map(function(value) {
       var value = rmquote(value)
@@ -77,10 +78,9 @@
 
   Parser.prototype.parse = function(tsv) {
     var seperator = this.seperator
-    var lines = tsv.split(/[\n\r]/).filter(comments)
+    var lines = tsv.split(/[\n\r]/).filter(comments) //line feed and carriage return
     var head = !!this.header
     var keys = head ? getValues(lines.shift(), seperator) : {}
-
     if (lines.length < 1) return []
 
     return lines.reduce(function(output, line) {
@@ -95,12 +95,12 @@
     }, [])
   }
 
-  var TSV = new Parser('\t')
+  var TSVParser = new Parser('\t')
 
   //expose module beyond nodejs
   if (typeof module !== 'undefined' && module.exports) {
-    module.exports = TSV
+    module.exports = TSVParser
   } else {
-    this.TSV = TSV
+    this.TSVParser = TSVParser
   }
 }.call(this))

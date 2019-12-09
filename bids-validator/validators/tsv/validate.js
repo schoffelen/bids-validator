@@ -1,6 +1,7 @@
 import utils from '../../utils'
 import tsv from './tsv'
 import { getTsvType } from './validateTsvColumns'
+import TSVParser from './tsvParser'
 
 const validate = (
   files,

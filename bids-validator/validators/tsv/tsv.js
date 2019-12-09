@@ -3,6 +3,7 @@ const Issue = utils.issues.Issue
 import checkAcqTimeFormat from './checkAcqTimeFormat'
 import checkAge89 from './checkAge89'
 import { getTsvType } from './validateTsvColumns'
+import TSVParser from './tsvParser'
 
 /**
  * TSV
@@ -12,6 +13,7 @@ import { getTsvType } from './validateTsvColumns'
  * it finds while validating against the BIDS
  * specification.
  */
+
 const TSV = (file, contents, fileList, callback) => {
   const issues = []
   const stimPaths = []
@@ -24,13 +26,12 @@ const TSV = (file, contents, fileList, callback) => {
       }),
     )
     callback(issues, null)
-    return
+    return 
   }
-
-  const rows = contents.split('\n')
+  const parsedContent = TSVParser.stringify(TSVParser.parse(contents))
+  const rows = parsedContent.split('\n')
   const headers = rows[0].trim().split('\t')
   const tsvType = getTsvType(file)
-
   // generic checks -----------------------------------------------------------
 
   let columnMismatch = false
