@@ -123,7 +123,7 @@ const TSV = (file, contents, fileList, callback) => {
   }
 
   // events.tsv
-  if (tsvType === 'events') {
+  if (file.name.endsWith('_events.tsv')) {
     if (headers.length == 0 || headers[0] !== 'onset') {
       issues.push(
         new Issue({
@@ -189,7 +189,9 @@ const TSV = (file, contents, fileList, callback) => {
 
   // participants.tsv
   let participants = null
-  if (tsvType === 'participants' || file.relativePath.includes('phenotype/')) {
+  if (file.name === 'participants.tsv' ||	
+  file.relativePath.includes('phenotype/')	
+) {
     const participantIdColumn = headers.indexOf('participant_id')
     if (participantIdColumn === -1) {
       issues.push(
@@ -218,20 +220,22 @@ const TSV = (file, contents, fileList, callback) => {
   }
 
   // channels.tsv
-  if (tsvType === 'channels') {
-    if (file.relativePath.includes('/meg/')) {
+  if (file.relativePath.includes('/meg/') &&
+    file.name.endsWith('_channels.tsv')) {
       checkheader('name', 0, file, 71)
       checkheader('type', 1, file, 71)
       checkheader('units', 2, file, 71)
     }
 
-    if (file.relativePath.includes('/eeg/')) {
+    if (file.relativePath.includes('/eeg/') &&
+    file.name.endsWith('_channels.tsv')) {
       checkheader('name', 0, file, 71)
       checkheader('type', 1, file, 71)
       checkheader('units', 2, file, 71)
     }
 
-    if (file.relativePath.includes('/ieeg/')) {
+    if (file.relativePath.includes('/ieeg/') &&
+    file.name.endsWith('_channels.tsv')) {
       checkheader('name', 0, file, 72)
       checkheader('type', 1, file, 72)
       checkheader('units', 2, file, 72)
@@ -241,29 +245,30 @@ const TSV = (file, contents, fileList, callback) => {
   }
 
   // electrodes.tsv
-  if (tsvType === 'electrodes') {
-    if (file.relativePath.includes('/eeg/')) {
+    if (file.relativePath.includes('/eeg/') &&
+    file.name.endsWith('_electrodes.tsv')) {
       checkheader('name', 0, file, 96)
       checkheader('x', 1, file, 96)
       checkheader('y', 2, file, 96)
       checkheader('z', 3, file, 96)
     }
 
-    if (file.relativePath.includes('/ieeg/')) {
+    if (file.relativePath.includes('/ieeg/') &&
+    file.name.endsWith('_electrodes.tsv')) {
       checkheader('name', 0, file, 73)
       checkheader('x', 1, file, 73)
       checkheader('y', 2, file, 73)
       checkheader('z', 3, file, 73)
       checkheader('size', 4, file, 73)
     }
-  }
+  
   // check partcipants.tsv for age 89+
 
   if (file.name === 'participants.tsv') {
     checkAge89(rows, file, issues)
   }
 
-  if (tsvType === 'scans') {
+  if (file.name.endsWith('_scans.tsv')) {
     // check _scans.tsv for column filename
     if (!(headers.indexOf('filename') > -1)) {
       issues.push(
@@ -284,5 +289,6 @@ const TSV = (file, contents, fileList, callback) => {
 
   callback(issues, participants, stimPaths)
 }
+
 
 export default TSV
