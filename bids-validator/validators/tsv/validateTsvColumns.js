@@ -50,6 +50,7 @@ const getCustomColumns = function(headers, type) {
  * @param {Object} jsonContentsDict
  */
 const validateTsvColumns = function(tsvs, jsonContentsDict) {
+  console.log("tsvs", tsvs, "jsoncontentsdict", jsonContentsDict)
   const tsvIssues = []
   tsvs.map(tsv => {
     const customColumns = getCustomColumns(

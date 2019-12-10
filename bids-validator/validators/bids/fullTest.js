@@ -29,16 +29,16 @@ const fullTest = (fileList, options, annexed, dir, callback) => {
   self.options = options
 
   let jsonContentsDict = {}
-    bContentsDict = {},
-    events = [],
-    stimuli = {
+  let bContentsDict = {}
+  let events = []
+  let stimuli = {
       events: [],
       directory: [],
-    },
-    jsonFiles = [],
-    headers = [],
-    participants = null,
-    phenotypeParticipants = []
+    }
+  let jsonFiles = []
+  let headers = []
+  let participants = null
+  let phenotypeParticipants = []
 
   let tsvs = []
 

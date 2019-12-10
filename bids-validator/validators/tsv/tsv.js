@@ -30,7 +30,8 @@ const TSV = (file, contents, fileList, callback) => {
   }
 
   const parsedContent = TSVParser.stringify(TSVParser.parse(contents))
-  const rows = parsedContent.split('\n')
+  const zeroValRows = parsedContent.split('\n')
+  const rows = zeroValRows.filter(row => row != 0)
   const headers = rows[0].trim().split('\t')
   const tsvType = getTsvType(file)
   // generic checks -----------------------------------------------------------
@@ -50,7 +51,7 @@ const TSV = (file, contents, fileList, callback) => {
       continue
     }
 
-    const values = row.trim().split('\t')
+    let values = row.trim().split('\t')
 
     // check for different length rows
     if (values.length !== headers.length && !columnMismatch) {

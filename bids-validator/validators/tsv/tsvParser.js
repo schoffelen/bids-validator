@@ -92,8 +92,11 @@
         }, item),
       )
       return output
+      console.log("output parse", output)
     }, [])
   }
+
+  // console.log(Object.values(item)[0])
 
   var TSVParser = new Parser('\t')
 
