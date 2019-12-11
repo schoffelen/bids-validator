@@ -2,7 +2,6 @@ import utils from '../../utils'
 const Issue = utils.issues.Issue
 import checkAcqTimeFormat from './checkAcqTimeFormat'
 import checkAge89 from './checkAge89'
-import { getTsvType } from './validateTsvColumns'
 import TSVParser from './tsvParser'
 
 /**
@@ -29,10 +28,15 @@ const TSV = (file, contents, fileList, callback) => {
   }
 
   const parsedContent = TSVParser.stringify(TSVParser.parse(contents))
-  const zeroValRows = parsedContent.split('\n')
-  const rows = zeroValRows.filter(row => row != 0)
-  const headers = rows[0].trim().split('\t')
+  const rows = parsedContent.split('\n')
 
+  //remove falsy val from content arr
+  for (var i = 0; i < rows.length; i++) {
+    if (rows[i] == false) {
+      rows[i] = ''
+    }
+}
+  const headers = rows[0].trim().split('\t')
   // generic checks -----------------------------------------------------------
 
   let columnMismatch = false
@@ -51,9 +55,8 @@ const TSV = (file, contents, fileList, callback) => {
     }
 
     const values = row.trim().split('\t')
-
     // check for different length rows
-    if (values.length !== headers.length && !columnMismatch) {
+    if (values.length !== headers.length) {
       columnMismatch = true
       issues.push(
         new Issue({
@@ -72,7 +75,7 @@ const TSV = (file, contents, fileList, callback) => {
         break
       }
 
-      if (value === '' && !emptyCells) {
+      if (value === '') {
         emptyCells = true
         // empty cell should raise an error
         issues.push(
@@ -297,6 +300,7 @@ const TSV = (file, contents, fileList, callback) => {
   }
 
   callback(issues, participants, stimPaths)
+  console.log(issues, issues[0].code)
 }
 
 export default TSV

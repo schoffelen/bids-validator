@@ -92,7 +92,6 @@
         }, item),
       )
       return output
-      console.log("output parse", output)
     }, [])
   }
 
