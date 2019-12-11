@@ -2,12 +2,6 @@ import assert from 'assert'
 import validate from '../index'
 
 describe('TSV', function() {
-
-let issueArr = []
-for (var i=0; i < issues.length; i++) {
-  issueArr.push(issues[i].code)
-}
-console.log(issueArr)
   // general tsv checks ------------------------------------------------------------------
 
   var file = {
@@ -19,14 +13,14 @@ console.log(issueArr)
   it('should not allow empty values saved as empty cells.', function() {
     var tsv = '1.0\t\t0.2\tresponse 1\t12.32'
     validate.TSV.TSV(file, tsv, [], function(issues) {
-      assert(issueArr.length && issueArr.includes(23))
+      assert(issues.length === 1 && issues[0].code === 23)
     })
   })
 
   it('should not allow missing values that are specified by something other than "n/a".', function() {
     var tsv = '1.0\tNA\t0.2\tresponse 1\t12.32'
     validate.TSV.TSV(file, tsv, [], function(issues) {
-      assert(issueArr.length && issueArr.includes(24))
+      assert(issues.length === 1 && issues[0].code === 24)
     })
   })
 
@@ -36,7 +30,7 @@ console.log(issueArr)
       'value-one\tvalue-two\n' +
       'value-one\tvalue-two\tvalue-three'
     validate.TSV.TSV(file, tsv, [], function(issues) {
-      assert(issueArr.length && issueArr.includes(22))
+      assert(issues.length === 1 && issues[0].code === 22)
     })
   })
 
@@ -53,7 +47,7 @@ console.log(issueArr)
       'header-one\tduration\theader-three\n' +
       'value-one\tvalue-two\tvalue-three'
     validate.TSV.TSV(eventsFile, tsv, [], function(issues) {
-      assert(issueArr.length && issueArr.includes(20))
+      assert(issues.length === 1 && issues[0].code === 20)
     })
   })
 
@@ -61,7 +55,7 @@ console.log(issueArr)
     var tsv =
       'onset\theader-two\theader-three\n' + 'value-one\tvalue-two\tvalue-three'
     validate.TSV.TSV(eventsFile, tsv, [], function(issues) {
-      assert(issueArr.length && issueArr.includes(21))
+      assert(issues.length === 1 && issues[0].code === 21)
     })
   })
 
@@ -71,6 +65,7 @@ console.log(issueArr)
     validate.TSV.TSV(eventsFile, tsv, [], function(issues) {
       assert.deepEqual(issues, [])
     })
+  })
 
   it('should not throw issues for a valid events file with only two columns', function() {
     var tsv = 'onset\tduration\n' + 'value-one\tvalue-two'
@@ -85,7 +80,7 @@ console.log(issueArr)
       'value-one\tvalue-two\timages/red-square.jpg'
     var fileList = [{ relativePath: '/stimuli/images/blue-square.jpg' }]
     validate.TSV.TSV(eventsFile, tsv, fileList, function(issues) {
-      assert(issueArr.length && issueArr.includes(52))
+      assert(issues.length === 1 && issues[0].code === 52)
     })
 
     fileList.push({ relativePath: '/stimuli/images/red-square.jpg' })

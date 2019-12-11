@@ -30,12 +30,13 @@ const TSV = (file, contents, fileList, callback) => {
   const parsedContent = TSVParser.stringify(TSVParser.parse(contents))
   const rows = parsedContent.split('\n')
 
-  //remove falsy val from content arr
+  // remove falsy val from content arr
   for (var i = 0; i < rows.length; i++) {
-    if (rows[i] == false) {
+    if (rows[i].trim().split('\t') == 0) {
       rows[i] = ''
     }
-}
+  }
+
   const headers = rows[0].trim().split('\t')
   // generic checks -----------------------------------------------------------
 
@@ -88,11 +89,10 @@ const TSV = (file, contents, fileList, callback) => {
           }),
         )
       } else if (
-        (value === 'NA' ||
-          value === 'na' ||
-          value === 'nan' ||
-          value === 'NaN') &&
-        !NACells
+        value === 'NA' ||
+        value === 'na' ||
+        value === 'nan' ||
+        value === 'NaN'
       ) {
         NACells = true
         // check if missing value is properly labeled as 'n/a'
@@ -300,7 +300,6 @@ const TSV = (file, contents, fileList, callback) => {
   }
 
   callback(issues, participants, stimPaths)
-  console.log(issues, issues[0].code)
 }
 
 export default TSV
