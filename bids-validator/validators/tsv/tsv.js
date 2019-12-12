@@ -28,11 +28,8 @@ const TSV = (file, contents, fileList, callback) => {
     return
   }
 
-  const { Headers, Rows } = ParseTSV(contents)
-
-  // const Rows = contents.split('\n')
-  // const Headers = Rows[0].trim().split('\t')
-
+  // TSV Parser -----------------------------------------------------------
+  const { Headers, Rows, Values } = ParseTSV(contents)
 
   // generic checks -----------------------------------------------------------
  
@@ -40,7 +37,6 @@ const TSV = (file, contents, fileList, callback) => {
   let emptyCells = false
   let NACells = false
 
-  // iterate Rows
   for (let i = 0; i < Rows.length; i++) {
     const row = Rows[i]
     if (columnMismatch && emptyCells && NACells) {
@@ -52,60 +48,60 @@ const TSV = (file, contents, fileList, callback) => {
       continue
     }
 
-    const values = row.trim().split('\t')
-
     // check for different length Rows
-    if (values.length !== Headers.length && !columnMismatch) {
-      columnMismatch = true
-      issues.push(
-        new Issue({
-          file: file,
-          evidence: row,
-          line: i + 1,
-          code: 22,
-        }),
-      )
-    }
-    
-    // iterate values
-    for (let j = 0; j < values.length; j++) {
-      const value = values[j]
-      if (columnMismatch && emptyCells && NACells) {
-        break
+    Values.forEach(values => {
+      if (values.length !== Headers.length && !columnMismatch) {
+        columnMismatch = true
+        issues.push(
+          new Issue({
+            file: file,
+            evidence: row,
+            line: i + 1,
+            code: 22,
+          }),
+        )
       }
 
-      if (value === '' && !emptyCells) {
-        emptyCells = true
-        // empty cell should raise an error
-        issues.push(
-          new Issue({
-            file: file,
-            evidence: row,
-            line: i + 1,
-            reason: 'Missing value at column # ' + (j + 1),
-            code: 23,
-          }),
-        )
-      } else if (
-        (value === 'NA' ||
-          value === 'na' ||
-          value === 'nan' ||
-          value === 'NaN') &&
-        !NACells
-      ) {
-        NACells = true
-        // check if missing value is properly labeled as 'n/a'
-        issues.push(
-          new Issue({
-            file: file,
-            evidence: row,
-            line: i + 1,
-            reason: 'Missing value at column # ' + (j + 1),
-            code: 24,
-          }),
-        )
+      // iterate values
+      for (let j = 0; j < values.length; j++) {
+        const value = values[j]
+        if (columnMismatch && emptyCells && NACells) {
+          break
+        }
+
+        if (value === '' && !emptyCells) {
+          emptyCells = true
+          // empty cell should raise an error
+          issues.push(
+            new Issue({
+              file: file,
+              evidence: row,
+              line: i + 1,
+              reason: 'Missing value at column # ' + (j + 1),
+              code: 23,
+            }),
+          )
+        } else if (
+          (value === 'NA' ||
+            value === 'na' ||
+            value === 'nan' ||
+            value === 'NaN') &&
+          !NACells
+        ) {
+          NACells = true
+          // check if missing value is properly labeled as 'n/a'
+          issues.push(
+            new Issue({
+              file: file,
+              evidence: row,
+              line: i + 1,
+              reason: 'Missing value at column # ' + (j + 1),
+              code: 24,
+            }),
+          )
+        }
       }
-    }
+    })
   }
 
   // specific file checks -----------------------------------------------------

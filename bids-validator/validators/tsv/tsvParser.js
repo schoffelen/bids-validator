@@ -18,21 +18,17 @@ function ParseTSV(contents) {
   }
   Content.Rows = contents.split('\n')
   Content.Headers = Content.Rows[0].trim().split('\t')
-  // Content.Rows.push(rows)
-  // Content.Headers.push(headers)
-  // var row
-  // for (let i = 0; i < Content.Rows.length; i++) {
-  //   row = Content.Rows[i]
-  //   if (false) {
-  //     break
-  //   }
-  //   if (!row || /^\s*$/.test(row)) {
-  //     continue
-  //   }
-  //   Content.Values.push(row.trim().split('\t'))
-  // }
-  // // const values = row.trim().split('\t')
-  // console.log({ Content })
+  for (let i = 0; i < Content.Rows.length; i++) {
+    var row = Content.Rows[i]
+    if (false) {
+      break
+    }
+    if (!row || /^\s*$/.test(row)) {
+      continue
+    }
+    Content.Values.push(row.trim().split('\t'))
+  }
+  // const values = row.trim().split('\t')
   return Content
 }
 
