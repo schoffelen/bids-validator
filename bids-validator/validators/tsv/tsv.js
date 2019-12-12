@@ -4,6 +4,7 @@ import checkAcqTimeFormat from './checkAcqTimeFormat'
 import checkAge89 from './checkAge89'
 import TSVParser from './tsvParser'
 
+
 /**
  * TSV
  *
@@ -26,23 +27,44 @@ const TSV = (file, contents, fileList, callback) => {
     callback(issues, null)
     return
   }
+ 
+function Parse(contents) {
+    let Content = {
+      Headers: [],
+      Rows: [],
+      Values: []
 
-  const parsedContent = TSVParser.stringify(TSVParser.parse(contents))
-  const rows = parsedContent.split('\n')
-
-  // remove falsy val from content arr
-  for (var i = 0; i < rows.length; i++) {
-    if (rows[i].trim().split('\t') == 0) {
-      rows[i] = ''
     }
+    const rows = contents.split('\n')
+    const headers = rows[0].trim().split('\t')
+    Content.Rows.push(rows)
+    Content.Headers.push(headers)
+    var row;
+    for (let i = 0; i < rows.length; i++) {
+        row = rows[i]
+        if (false) {
+          break
+        }
+      if (!row || /^\s*$/.test(row)) {
+        continue
+      }
+      Content.Values.push(row.trim().split('\t'))
+    }
+    // const values = row.trim().split('\t')
+    console.log({Content})
   }
-
+  Parse(contents)
+  
+  const rows = contents.split('\n')
   const headers = rows[0].trim().split('\t')
-  // generic checks -----------------------------------------------------------
 
+
+  // generic checks -----------------------------------------------------------
+ 
   let columnMismatch = false
   let emptyCells = false
   let NACells = false
+
   // iterate rows
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i]
@@ -56,8 +78,9 @@ const TSV = (file, contents, fileList, callback) => {
     }
 
     const values = row.trim().split('\t')
+
     // check for different length rows
-    if (values.length !== headers.length) {
+    if (values.length !== headers.length && !columnMismatch) {
       columnMismatch = true
       issues.push(
         new Issue({
@@ -68,7 +91,7 @@ const TSV = (file, contents, fileList, callback) => {
         }),
       )
     }
-
+    
     // iterate values
     for (let j = 0; j < values.length; j++) {
       const value = values[j]
@@ -76,7 +99,7 @@ const TSV = (file, contents, fileList, callback) => {
         break
       }
 
-      if (value === '') {
+      if (value === '' && !emptyCells) {
         emptyCells = true
         // empty cell should raise an error
         issues.push(
@@ -89,10 +112,11 @@ const TSV = (file, contents, fileList, callback) => {
           }),
         )
       } else if (
-        value === 'NA' ||
-        value === 'na' ||
-        value === 'nan' ||
-        value === 'NaN'
+        (value === 'NA' ||
+          value === 'na' ||
+          value === 'nan' ||
+          value === 'NaN') &&
+        !NACells
       ) {
         NACells = true
         // check if missing value is properly labeled as 'n/a'

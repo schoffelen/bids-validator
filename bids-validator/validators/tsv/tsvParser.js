@@ -3,6 +3,13 @@
  * Module for parsing TSV (and eventually other formats)
  */
 
+ // remove falsy val from content arr
+  // for (var i = 0; i < rows.length; i++) {
+  //   if (rows[i].trim().split('\t') == 0) {
+  //     rows[i] = ''
+  //   }
+  // }
+
 (function() {
   //defaults
   var TSVParser = {}
@@ -35,10 +42,27 @@
   function getValues(line, seperator) {
     return line.split(seperator).map(function(value) {
       var value = rmquote(value)
-      var numeric = +value //unary to type Num || NaN
-      return numeric === numeric ? numeric : value // NaN !== NaN
+      var num = value
+      return num === parseInt(value, 10) ? num : value
+
+      // var numeric = +value //unary to type Num || NaN   *********
+      // return numeric === numeric ? numeric : value // NaN !== NaN  *********
+
     })
   }
+
+  // sanitize endlines - throw err on carriage returns, excise whitespace
+  
+  // const { rows, headers } = TSVParser(content)
+  // {
+  //   headers: ["val1", "val2", "val3"], 
+  //   rows: [
+  //   incl headers as arr
+  //   ["val1", "val2", "val3"], 
+  //   ["val1", "val2", "val3"],
+  //   ["val1", "val2", "val3"]
+  //   ]
+  // }
 
   function Parser(seperator, options) {
     var opt = extend(
@@ -91,6 +115,7 @@
           return item
         }, item),
       )
+      console.log({output})
       return output
     }, [])
   }
