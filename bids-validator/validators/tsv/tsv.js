@@ -2,7 +2,7 @@ import utils from '../../utils'
 const Issue = utils.issues.Issue
 import checkAcqTimeFormat from './checkAcqTimeFormat'
 import checkAge89 from './checkAge89'
-import TSVParser from './tsvParser'
+import ParseTSV from './tsvParser'
 
 
 /**
@@ -27,36 +27,11 @@ const TSV = (file, contents, fileList, callback) => {
     callback(issues, null)
     return
   }
- 
-function Parse(contents) {
-    let Content = {
-      Headers: [],
-      Rows: [],
-      Values: []
 
-    }
-    const rows = contents.split('\n')
-    const headers = rows[0].trim().split('\t')
-    Content.Rows.push(rows)
-    Content.Headers.push(headers)
-    var row;
-    for (let i = 0; i < rows.length; i++) {
-        row = rows[i]
-        if (false) {
-          break
-        }
-      if (!row || /^\s*$/.test(row)) {
-        continue
-      }
-      Content.Values.push(row.trim().split('\t'))
-    }
-    // const values = row.trim().split('\t')
-    console.log({Content})
-  }
-  Parse(contents)
-  
-  const rows = contents.split('\n')
-  const headers = rows[0].trim().split('\t')
+  const { Headers, Rows } = ParseTSV(contents)
+
+  // const Rows = contents.split('\n')
+  // const Headers = Rows[0].trim().split('\t')
 
 
   // generic checks -----------------------------------------------------------
@@ -65,22 +40,22 @@ function Parse(contents) {
   let emptyCells = false
   let NACells = false
 
-  // iterate rows
-  for (let i = 0; i < rows.length; i++) {
-    const row = rows[i]
+  // iterate Rows
+  for (let i = 0; i < Rows.length; i++) {
+    const row = Rows[i]
     if (columnMismatch && emptyCells && NACells) {
       break
     }
 
-    // skip empty rows
+    // skip empty Rows
     if (!row || /^\s*$/.test(row)) {
       continue
     }
 
     const values = row.trim().split('\t')
 
-    // check for different length rows
-    if (values.length !== headers.length && !columnMismatch) {
+    // check for different length Rows
+    if (values.length !== Headers.length && !columnMismatch) {
       columnMismatch = true
       issues.push(
         new Issue({
@@ -135,13 +110,13 @@ function Parse(contents) {
 
   // specific file checks -----------------------------------------------------
   const checkheader = function checkheader(headername, idx, file, code) {
-    if (headers[idx] !== headername) {
+    if (Headers[idx] !== headername) {
       issues.push(
         new Issue({
           file: file,
-          evidence: headers,
+          evidence: Headers,
           line: 1,
-          character: rows[0].indexOf(headers[idx]),
+          character: Rows[0].indexOf(Headers[idx]),
           code: code,
         }),
       )
@@ -150,21 +125,21 @@ function Parse(contents) {
 
   // events.tsv
   if (file.name.endsWith('_events.tsv')) {
-    if (headers.length == 0 || headers[0] !== 'onset') {
+    if (Headers.length == 0 || Headers[0] !== 'onset') {
       issues.push(
         new Issue({
           file: file,
-          evidence: headers,
+          evidence: Headers,
           line: 1,
           code: 20,
         }),
       )
     }
-    if (headers.length == 1 || headers[1].trim() !== 'duration') {
+    if (Headers.length == 1 || Headers[1].trim() !== 'duration') {
       issues.push(
         new Issue({
           file: file,
-          evidence: headers,
+          evidence: Headers,
           line: 1,
           code: 21,
         }),
@@ -179,10 +154,10 @@ function Parse(contents) {
 
     // check for stimuli file
     const stimFiles = []
-    if (headers.indexOf('stim_file') > -1) {
-      for (let k = 0; k < rows.length; k++) {
-        const stimFile = rows[k].trim().split('\t')[
-          headers.indexOf('stim_file')
+    if (Headers.indexOf('stim_file') > -1) {
+      for (let k = 0; k < Rows.length; k++) {
+        const stimFile = Rows[k].trim().split('\t')[
+          Headers.indexOf('stim_file')
         ]
         const stimPath = '/stimuli/' + stimFile
         if (
@@ -203,7 +178,7 @@ function Parse(contents) {
                   stimFile +
                   ') was declared but not found in /stimuli.',
                 line: k + 1,
-                character: rows[k].indexOf(stimFile),
+                character: Rows[k].indexOf(stimFile),
                 code: 52,
               }),
             )
@@ -219,21 +194,21 @@ function Parse(contents) {
     file.name === 'participants.tsv' ||
     file.relativePath.includes('phenotype/')
   ) {
-    const participantIdColumn = headers.indexOf('participant_id')
+    const participantIdColumn = Headers.indexOf('participant_id')
     if (participantIdColumn === -1) {
       issues.push(
         new Issue({
           file: file,
-          evidence: headers.join('\t'),
+          evidence: Headers.join('\t'),
           line: 1,
           code: 48,
         }),
       )
     } else {
       participants = []
-      for (let l = 1; l < rows.length; l++) {
-        const row = rows[l].trim().split('\t')
-        // skip empty rows
+      for (let l = 1; l < Rows.length; l++) {
+        const row = Rows[l].trim().split('\t')
+        // skip empty Rows
         if (!row || /^\s*$/.test(row)) {
           continue
         }
@@ -301,25 +276,25 @@ function Parse(contents) {
   // check partcipants.tsv for age 89+
 
   if (file.name === 'participants.tsv') {
-    checkAge89(rows, file, issues)
+    checkAge89(Rows, file, issues)
   }
 
   if (file.name.endsWith('_scans.tsv')) {
     // check _scans.tsv for column filename
-    if (!(headers.indexOf('filename') > -1)) {
+    if (!(Headers.indexOf('filename') > -1)) {
       issues.push(
         new Issue({
           line: 1,
           file: file,
-          evidence: headers.join('\t'),
+          evidence: Headers.join('\t'),
           code: 68,
         }),
       )
     }
 
     // if _scans.tsv has the acq_time header, check datetime format
-    if (headers.indexOf('acq_time') > -1) {
-      checkAcqTimeFormat(rows, file, issues)
+    if (Headers.indexOf('acq_time') > -1) {
+      checkAcqTimeFormat(Rows, file, issues)
     }
   }
 
