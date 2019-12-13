@@ -3,12 +3,6 @@
  * Module for parsing TSV (and eventually other formats)
  */
 
-// remove falsy val from content arr
-// for (var i = 0; i < rows.length; i++) {
-//   if (rows[i].trim().split('\t') == 0) {
-//     rows[i] = ''
-//   }
-// }
 
 function ParseTSV(contents) {
   let Content = {
@@ -28,8 +22,10 @@ function ParseTSV(contents) {
     }
     Content.Values.push(row.trim().split('\t'))
   }
-  // const values = row.trim().split('\t')
-  return Content
+  return {
+    headers: Content.Headers,
+    rows: Content.Values
+  }
 }
 
 module.exports = ParseTSV

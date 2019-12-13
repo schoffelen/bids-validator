@@ -4,7 +4,6 @@ import checkAcqTimeFormat from './checkAcqTimeFormat'
 import checkAge89 from './checkAge89'
 import ParseTSV from './tsvParser'
 
-
 /**
  * TSV
  *
@@ -13,6 +12,7 @@ import ParseTSV from './tsvParser'
  * it finds while validating against the BIDS
  * specification.
  */
+
 const TSV = (file, contents, fileList, callback) => {
   const issues = []
   const stimPaths = []
@@ -29,90 +29,87 @@ const TSV = (file, contents, fileList, callback) => {
   }
 
   // TSV Parser -----------------------------------------------------------
-  const { Headers, Rows, Values } = ParseTSV(contents)
+  const { headers, rows } = ParseTSV(contents)
 
   // generic checks -----------------------------------------------------------
- 
   let columnMismatch = false
   let emptyCells = false
   let NACells = false
 
-  for (let i = 0; i < Rows.length; i++) {
-    const row = Rows[i]
+  // follow values, row -> arr.join('\t')
+
+  rows.forEach((values, i) => {
+    var row = rows[i]
+    if (values.length === 1 && /^\s*$/.test(values[0])) {
+      return
+    }
     if (columnMismatch && emptyCells && NACells) {
-      break
+      return
     }
 
-    // skip empty Rows
-    if (!row || /^\s*$/.test(row)) {
-      continue
+    // check for different length rows
+    if (values.length !== headers.length && !columnMismatch) {
+      columnMismatch = true
+      issues.push(
+        new Issue({
+          file: file,
+          evidence: row,
+          line: i + 1,
+          code: 22,
+        }),
+      )
     }
 
-    // check for different length Rows
-    Values.forEach(values => {
-      if (values.length !== Headers.length && !columnMismatch) {
-        columnMismatch = true
+    // iterate values
+    for (let j = 0; j < values.length; j++) {
+      const value = values[j]
+      if (columnMismatch && emptyCells && NACells) {
+        break
+      }
+
+      if (value === '' && !emptyCells) {
+        emptyCells = true
+        // empty cell should raise an error
         issues.push(
           new Issue({
             file: file,
             evidence: row,
             line: i + 1,
-            code: 22,
+            reason: 'Missing value at column # ' + (j + 1),
+            code: 23,
+          }),
+        )
+      } else if (
+        (value === 'NA' ||
+          value === 'na' ||
+          value === 'nan' ||
+          value === 'NaN') &&
+        !NACells
+      ) {
+        NACells = true
+        // check if missing value is properly labeled as 'n/a'
+        issues.push(
+          new Issue({
+            file: file,
+            evidence: row,
+            line: i + 1,
+            reason: 'Missing value at column # ' + (j + 1),
+            code: 24,
           }),
         )
       }
-
-      // iterate values
-      for (let j = 0; j < values.length; j++) {
-        const value = values[j]
-        if (columnMismatch && emptyCells && NACells) {
-          break
-        }
-
-        if (value === '' && !emptyCells) {
-          emptyCells = true
-          // empty cell should raise an error
-          issues.push(
-            new Issue({
-              file: file,
-              evidence: row,
-              line: i + 1,
-              reason: 'Missing value at column # ' + (j + 1),
-              code: 23,
-            }),
-          )
-        } else if (
-          (value === 'NA' ||
-            value === 'na' ||
-            value === 'nan' ||
-            value === 'NaN') &&
-          !NACells
-        ) {
-          NACells = true
-          // check if missing value is properly labeled as 'n/a'
-          issues.push(
-            new Issue({
-              file: file,
-              evidence: row,
-              line: i + 1,
-              reason: 'Missing value at column # ' + (j + 1),
-              code: 24,
-            }),
-          )
-        }
-      }
-    })
-  }
+    }
+  })
 
   // specific file checks -----------------------------------------------------
   const checkheader = function checkheader(headername, idx, file, code) {
-    if (Headers[idx] !== headername) {
+    if (headers[idx] !== headername) {
       issues.push(
         new Issue({
           file: file,
-          evidence: Headers,
+          evidence: headers,
           line: 1,
-          character: Rows[0].indexOf(Headers[idx]),
+          character: rows[0].indexOf(headers[idx]),
           code: code,
         }),
       )
@@ -121,21 +118,21 @@ const TSV = (file, contents, fileList, callback) => {
 
   // events.tsv
   if (file.name.endsWith('_events.tsv')) {
-    if (Headers.length == 0 || Headers[0] !== 'onset') {
+    if (headers.length == 0 || headers[0] !== 'onset') {
       issues.push(
         new Issue({
           file: file,
-          evidence: Headers,
+          evidence: headers,
           line: 1,
           code: 20,
         }),
       )
     }
-    if (Headers.length == 1 || Headers[1].trim() !== 'duration') {
+    if (headers.length == 1 || headers[1].trim() !== 'duration') {
       issues.push(
         new Issue({
           file: file,
-          evidence: Headers,
+          evidence: headers,
           line: 1,
           code: 21,
         }),
@@ -150,10 +147,10 @@ const TSV = (file, contents, fileList, callback) => {
 
     // check for stimuli file
     const stimFiles = []
-    if (Headers.indexOf('stim_file') > -1) {
-      for (let k = 0; k < Rows.length; k++) {
-        const stimFile = Rows[k].trim().split('\t')[
-          Headers.indexOf('stim_file')
+    if (headers.indexOf('stim_file') > -1) {
+      for (let k = 0; k < rows.length; k++) {
+        const stimFile = rows[k][
+          headers.indexOf('stim_file')
         ]
         const stimPath = '/stimuli/' + stimFile
         if (
@@ -174,7 +171,7 @@ const TSV = (file, contents, fileList, callback) => {
                   stimFile +
                   ') was declared but not found in /stimuli.',
                 line: k + 1,
-                character: Rows[k].indexOf(stimFile),
+                character: rows[k].indexOf(stimFile),
                 code: 52,
               }),
             )
@@ -190,21 +187,21 @@ const TSV = (file, contents, fileList, callback) => {
     file.name === 'participants.tsv' ||
     file.relativePath.includes('phenotype/')
   ) {
-    const participantIdColumn = Headers.indexOf('participant_id')
+    const participantIdColumn = headers.indexOf('participant_id')
     if (participantIdColumn === -1) {
       issues.push(
         new Issue({
           file: file,
-          evidence: Headers.join('\t'),
+          evidence: headers.join('\t'),
           line: 1,
           code: 48,
         }),
       )
     } else {
       participants = []
-      for (let l = 1; l < Rows.length; l++) {
-        const row = Rows[l].trim().split('\t')
-        // skip empty Rows
+      for (let l = 1; l < rows.length; l++) {
+        const row = rows[l]
+        // skip empty rows
         if (!row || /^\s*$/.test(row)) {
           continue
         }
@@ -272,25 +269,25 @@ const TSV = (file, contents, fileList, callback) => {
   // check partcipants.tsv for age 89+
 
   if (file.name === 'participants.tsv') {
-    checkAge89(Rows, file, issues)
+    checkAge89(rows, file, issues)
   }
 
   if (file.name.endsWith('_scans.tsv')) {
     // check _scans.tsv for column filename
-    if (!(Headers.indexOf('filename') > -1)) {
+    if (!(headers.indexOf('filename') > -1)) {
       issues.push(
         new Issue({
           line: 1,
           file: file,
-          evidence: Headers.join('\t'),
+          evidence: headers.join('\t'),
           code: 68,
         }),
       )
     }
 
     // if _scans.tsv has the acq_time header, check datetime format
-    if (Headers.indexOf('acq_time') > -1) {
-      checkAcqTimeFormat(Rows, file, issues)
+    if (headers.indexOf('acq_time') > -1) {
+      checkAcqTimeFormat(rows, file, issues)
     }
   }
 
