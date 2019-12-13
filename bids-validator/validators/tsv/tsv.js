@@ -36,8 +36,6 @@ const TSV = (file, contents, fileList, callback) => {
   let emptyCells = false
   let NACells = false
 
-  // follow values, row -> arr.join('\t')
-
   rows.forEach((values, i) => {
     var row = rows[i]
     if (values.length === 1 && /^\s*$/.test(values[0])) {
