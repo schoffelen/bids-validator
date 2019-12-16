@@ -44,14 +44,13 @@ const TSV = (file, contents, fileList, callback) => {
     if (columnMismatch && emptyCells && NACells) {
       return
     }
-
     // check for different length rows
     if (values.length !== headers.length && !columnMismatch) {
       columnMismatch = true
       issues.push(
         new Issue({
           file: file,
-          evidence: row,
+          evidence: `row ${i}: ${values.join('\t')}`,
           line: i + 1,
           code: 22,
         }),
