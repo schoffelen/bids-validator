@@ -146,9 +146,7 @@ const TSV = (file, contents, fileList, callback) => {
     const stimFiles = []
     if (headers.indexOf('stim_file') > -1) {
       for (let k = 0; k < rows.length; k++) {
-        const stimFile = rows[k][
-          headers.indexOf('stim_file')
-        ]
+        const stimFile = rows[k][headers.indexOf('stim_file')]
         const stimPath = '/stimuli/' + stimFile
         if (
           stimFile &&
