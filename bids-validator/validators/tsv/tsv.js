@@ -36,14 +36,11 @@ const TSV = (file, contents, fileList, callback) => {
   let emptyCells = false
   let NACells = false
 
-  rows.forEach((values, i) => {
+  for (let i = 0; i < rows.length; i++) {
+    const values = rows[i]
     const evidence = `row ${i}: ${values.join('\t')}`
-    if (values.length === 1 && /^\s*$/.test(values[0])) {
-      return
-    }
-    if (columnMismatch && emptyCells && NACells) {
-      return
-    }
+    if (values.length === 1 && /^\s*$/.test(values[0])) continue
+    if (columnMismatch && emptyCells && NACells) break
     // check for different length rows
     if (values.length !== headers.length && !columnMismatch) {
       columnMismatch = true
@@ -56,14 +53,10 @@ const TSV = (file, contents, fileList, callback) => {
         }),
       )
     }
-
     // iterate values
     for (let j = 0; j < values.length; j++) {
       const value = values[j]
-      if (columnMismatch && emptyCells && NACells) {
-        break
-      }
-
+      if (columnMismatch && emptyCells && NACells) break
       if (value === '' && !emptyCells) {
         emptyCells = true
         // empty cell should raise an error
@@ -96,7 +89,7 @@ const TSV = (file, contents, fileList, callback) => {
         )
       }
     }
-  })
+  }
 
   // specific file checks -----------------------------------------------------
   const checkheader = function checkheader(headername, idx, file, code) {
