@@ -37,7 +37,7 @@ const TSV = (file, contents, fileList, callback) => {
   let NACells = false
 
   rows.forEach((values, i) => {
-    var evidence = `row ${i}: ${values.join('\t')}`
+    const evidence = `row ${i}: ${values.join('\t')}`
     if (values.length === 1 && /^\s*$/.test(values[0])) {
       return
     }
