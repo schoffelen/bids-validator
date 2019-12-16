@@ -3,13 +3,14 @@
  * Module for parsing TSV (and eventually other formats)
  */
 
+const trimSplit = separator => str => str.trim().split(separator)
+const isContentfulRow = row => row && !/^\s*$/.test(row)
+
 function parseTSV(contents) {
   let content = {
     headers: [],
     rows: [],
   }
-  var trimSplit = separator => str => str.trim().split(separator)
-  var isContentfulRow = row => row && !/^\s*$/.test(row)
   content.rows = trimSplit('\n')(contents)
     .filter(isContentfulRow)
     .map(trimSplit('\t'))
