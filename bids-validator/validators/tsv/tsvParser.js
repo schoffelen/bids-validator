@@ -4,27 +4,18 @@
  */
 
 function parseTSV(contents) {
-  let Content = {
-    Headers: [],
-    Rows: [],
-    Values: [],
+  let content = {
+    headers: [],
+    rows: [],
   }
-  Content.Rows = contents.split('\n')
-  Content.Headers = Content.Rows[0].trim().split('\t')
-  for (let i = 0; i < Content.Rows.length; i++) {
-    var row = Content.Rows[i]
-    if (false) {
-      break
-    }
-    if (!row || /^\s*$/.test(row)) {
-      continue
-    }
-    Content.Values.push(row.trim().split('\t'))
-  }
+  content.rows = contents.trim().split('\n')
+  .filter(row => row && !/^\s*$/.test(row))
+  .map(row => row.trim().split('\t'))
+  content.headers = content.rows.length ? content.rows[0] : []
+
   return {
-    headers: Content.Headers,
-    rows: Content.Values
+    headers: content.headers,
+    rows: content.rows
   }
 }
-
 module.exports = parseTSV
