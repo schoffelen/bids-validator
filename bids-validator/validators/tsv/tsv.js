@@ -37,7 +37,7 @@ const TSV = (file, contents, fileList, callback) => {
   let NACells = false
 
   rows.forEach((values, i) => {
-    var row = rows[i]
+    var evidence = `row ${i}: ${values.join('\t')}`
     if (values.length === 1 && /^\s*$/.test(values[0])) {
       return
     }
@@ -50,7 +50,7 @@ const TSV = (file, contents, fileList, callback) => {
       issues.push(
         new Issue({
           file: file,
-          evidence: `row ${i}: ${values.join('\t')}`,
+          evidence,
           line: i + 1,
           code: 22,
         }),
@@ -70,7 +70,7 @@ const TSV = (file, contents, fileList, callback) => {
         issues.push(
           new Issue({
             file: file,
-            evidence: row,
+            evidence,
             line: i + 1,
             reason: 'Missing value at column # ' + (j + 1),
             code: 23,
@@ -88,7 +88,7 @@ const TSV = (file, contents, fileList, callback) => {
         issues.push(
           new Issue({
             file: file,
-            evidence: row,
+            evidence,
             line: i + 1,
             reason: 'Missing value at column # ' + (j + 1),
             code: 24,
