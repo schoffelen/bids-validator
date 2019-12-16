@@ -14,9 +14,6 @@ function parseTSV(contents) {
     .filter(isContentfulRow)
     .map(trimSplit('\t'))
   content.headers = content.rows.length ? content.rows[0] : [] 
-  return {
-    headers: content.headers,
-    rows: content.rows,
-  }
+  return content
 }
 module.exports = parseTSV
