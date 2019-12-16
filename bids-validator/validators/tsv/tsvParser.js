@@ -3,8 +3,7 @@
  * Module for parsing TSV (and eventually other formats)
  */
 
-
-function ParseTSV(contents) {
+function parseTSV(contents) {
   let Content = {
     Headers: [],
     Rows: [],
@@ -28,4 +27,4 @@ function ParseTSV(contents) {
   }
 }
 
-module.exports = ParseTSV
+module.exports = parseTSV

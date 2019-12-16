@@ -2,7 +2,7 @@ import utils from '../../utils'
 const Issue = utils.issues.Issue
 import checkAcqTimeFormat from './checkAcqTimeFormat'
 import checkAge89 from './checkAge89'
-import ParseTSV from './tsvParser'
+import parseTSV from './tsvParser'
 
 /**
  * TSV
@@ -29,7 +29,7 @@ const TSV = (file, contents, fileList, callback) => {
   }
 
   // TSV Parser -----------------------------------------------------------
-  const { headers, rows } = ParseTSV(contents)
+  const { headers, rows } = parseTSV(contents)
 
   // generic checks -----------------------------------------------------------
   let columnMismatch = false
