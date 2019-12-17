@@ -7,7 +7,7 @@ const trimSplit = separator => str => str.trim().split(separator)
 const isContentfulRow = row => row && !/^\s*$/.test(row)
 
 function parseTSV(contents) {
-  let content = {
+  const content = {
     headers: [],
     rows: [],
   }
