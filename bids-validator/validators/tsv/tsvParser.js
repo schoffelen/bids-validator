@@ -7,6 +7,9 @@ const trimSplit = separator => str => str.trim().split(separator)
 const isContentfulRow = row => row && !/^\s*$/.test(row)
 
 function parseTSV(contents) {
+  // remove browser-interpreted BOM
+  contents = contents.replace(/^ï»¿/, '')
+
   const content = {
     headers: [],
     rows: [],
