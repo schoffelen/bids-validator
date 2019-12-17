@@ -17,4 +17,5 @@ function parseTSV(contents) {
   content.headers = content.rows.length ? content.rows[0] : [] 
   return content
 }
-module.exports = parseTSV
+
+export default parseTSV
