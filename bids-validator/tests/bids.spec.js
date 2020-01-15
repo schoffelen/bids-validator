@@ -129,7 +129,7 @@ describe('BIDS example datasets ', function() {
       assert.isFalse(summary.dataProcessed)
       assert(summary.modalities.includes('T1w'))
       assert(summary.modalities.includes('bold'))
-      assert(summary.totalFiles === 8)
+      assert(summary.totalFiles === 9)
       assert(
         errors.findIndex(error => error.code === 60) > -1,
         'errors do not contain a code 60',
