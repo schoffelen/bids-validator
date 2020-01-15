@@ -131,7 +131,7 @@ describe('BIDS example datasets ', function() {
       assert(summary.modalities.includes('bold'))
       // eslint-disable-next-line
       console.log({ summary })
-      assert(summary.totalFiles === 8)
+      assert.strictEqual(summary.totalFiles, 8)
       assert(
         errors.findIndex(error => error.code === 60) > -1,
         'errors do not contain a code 60',
