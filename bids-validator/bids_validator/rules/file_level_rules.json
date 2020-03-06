@@ -204,7 +204,14 @@
   "meg": {
     "regexp": "^\\/(sub-[a-zA-Z0-9]+)\\/(?:(ses-[a-zA-Z0-9]+)\\/)?meg\\/\\1(_\\2)?(?:_task-[a-zA-Z0-9]+)?(?:_acq-[a-zA-Z0-9]+)?(?:_run-[0-9]+)?(?:_proc-[a-zA-Z0-9]+)?(?:_part-[0-9]+)?(_digitizer.txt|_meg(@@@_meg_type_@@@\\/(.(?!\\.(sqd|con|fif|raw|raw\\.mhd|trg|kdf|chn)$))*|\\/(.(?!\\.(sqd|con|fif|raw|raw\\.mhd|trg|kdf|chn)$))*)|(@@@_meg_ext_@@@))$",
     "tokens": {
-      "@@@_meg_type_@@@": ["\\.ds/.*", "\\.(?:chn|kdf|trg)", "\\.(?:raw|raw\\.mhd)", "\\.fif", "\\.(?:con|sqd)", "\\.(?:kdf|chn|trg)"],
+      "@@@_meg_type_@@@": [
+        "\\.ds/.*",
+        "\\.(?:chn|kdf|trg)",
+        "\\.(?:raw|raw\\.mhd)",
+        "\\.fif",
+        "\\.(?:con|sqd)",
+        "\\.(?:kdf|chn|trg)"
+      ],
       "@@@_meg_ext_@@@": [
         "_events\\.json",
         "_events\\.tsv",
@@ -216,6 +223,34 @@
         "_headshape\\.pos",
         "_markers\\.(?:mrk|sqd)"
       ]
+    }
+  },
+
+  "pet": {
+    "regexp": "^\\/(sub-[a-zA-Z0-9]+)\\/(?:(ses-[a-zA-Z0-9]+)\\/)pet\\/(sub-[a-zA-Z0-9]+)_(?:(ses-[a-zA-Z0-9]+))|((@@@_pet_ext_@@@))$",
+    "tokens": {
+      "@@@_pet_ext_@@@": ["_pet.json", "_pet\\.nii\\.gz", "_pet\\.nii"]
+    }
+  },
+
+  "pet_blood": {
+    "regexp": "^\\/(sub-[a-zA-Z0-9]+)\\/(?:(ses-[a-zA-Z0-9]+)\\/)pet\\/(sub-[a-zA-Z0-9]+)_(?:(ses-[a-zA-Z0-9]+))|((@@@_pet_ext_@@@))$",
+    "tokens": {
+      "@@@_pet_ext_@@@": ["_pet-blood\\.nii\\.json"]
+    }
+  },
+
+  "pet_data": {
+    "regexp": "^\\/(sub-[a-zA-Z0-9]+)\\/(?:(ses-[a-zA-Z0-9]+)\\/)pet\\/(sub-[a-zA-Z0-9]+)_(?:(ses-[a-zA-Z0-9]+))|((@@@_pet_ext_@@@))$",
+    "tokens": {
+      "@@@_pet_ext_@@@": ["_pet\\.nii\\.gz", "_pet\\.nii"]
+    }
+  },
+
+  "pet_blood_data": {
+    "regexp": "^\\/(sub-[a-zA-Z0-9]+)\\/(?:(ses-[a-zA-Z0-9]+)\\/)pet\\/(sub-[a-zA-Z0-9]+)_(?:(ses-[a-zA-Z0-9]+))|((@@@_pet_ext_@@@))$",
+    "tokens": {
+      "@@@_pet_ext_@@@": ["_pet-blood\\.tsv"]
     }
   },
 

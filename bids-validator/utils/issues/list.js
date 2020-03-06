@@ -695,12 +695,17 @@ export default {
     key: 'INVALID_TSV_UNITS',
     severity: 'error',
     reason:
-      'Units in .tsv files must be valid SI units as described in the BIDS spec Appendix V (https://bids-specification.readthedocs.io/en/stable/99-appendices/05-units.html).'
+      'Units in .tsv files must be valid SI units as described in the BIDS spec Appendix V (https://bids-specification.readthedocs.io/en/stable/99-appendices/05-units.html).',
   },
   125: {
     key: 'CHANNELS_COLUMN_STATUS',
     severity: 'error',
     reason:
-      'Status column in channels.tsv files must contain only one of two values: good or bad. Per the BIDS spec: (https://bids-specification.readthedocs.io/en/stable/04-modality-specific-files/04-intracranial-electroencephalography.html#channels-description-_channelstsv).'
+      'Status column in channels.tsv files must contain only one of two values: good or bad. Per the BIDS spec: (https://bids-specification.readthedocs.io/en/stable/04-modality-specific-files/04-intracranial-electroencephalography.html#channels-description-_channelstsv).',
+  },
+  126: {
+    key: 'CHANNELS_COLUMN_STATUS',
+    severity: 'error',
+    reason: 'This is a test error for PET scan blood data!',
   },
 }

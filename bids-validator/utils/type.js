@@ -25,6 +25,8 @@ const anatData = buildRegExp(file_level_rules.anat)
 const anatDefacemaskData = buildRegExp(file_level_rules.anat_defacemask)
 const behavioralData = buildRegExp(file_level_rules.behavioral)
 const contData = buildRegExp(file_level_rules.cont)
+const petDataFile = buildRegExp(file_level_rules.pet_data)
+const petBloodDataFile = buildRegExp(file_level_rules.pet_blood_data)
 const dwiData = buildRegExp(file_level_rules.dwi)
 const eegData = buildRegExp(file_level_rules.eeg)
 const fieldmapData = buildRegExp(file_level_rules.field_map)
@@ -34,6 +36,8 @@ const funcBoldData = buildRegExp(file_level_rules.func_bold)
 const ieegData = buildRegExp(file_level_rules.ieeg)
 const megData = buildRegExp(file_level_rules.meg)
 const stimuliData = buildRegExp(file_level_rules.stimuli)
+const petData = buildRegExp(file_level_rules.pet)
+const petBloodData = buildRegExp(file_level_rules.pet_blood)
 // Phenotypic data
 const phenotypicData = buildRegExp(phenotypic_rules.phenotypic_data)
 // Session level
@@ -79,7 +83,9 @@ export default {
       this.file.isBehavioral(path) ||
       this.file.isCont(path) ||
       this.file.isFieldMap(path) ||
-      this.file.isPhenotypic(path)
+      this.file.isPhenotypic(path) ||
+      this.file.isPET(path) ||
+      this.file.isPETBlood(path)
     )
   },
 
@@ -206,6 +212,14 @@ export default {
       return conditionalMatch(ieegData, path)
     },
 
+    isPET: function(path) {
+      return conditionalMatch(petData, path)
+    },
+
+    isPETBlood: function(path) {
+      return conditionalMatch(petBloodData, path)
+    },
+
     isBehavioral: function(path) {
       return conditionalMatch(behavioralData, path)
     },
@@ -216,6 +230,14 @@ export default {
 
     isCont: function(path) {
       return conditionalMatch(contData, path)
+    },
+
+    isPETData: function(path) {
+      return conditionalMatch(petDataFile, path)
+    },
+
+    isPETBloodData: function(path) {
+      return conditionalMatch(petBloodDataFile, path)
     },
 
     hasModality: function(path) {
@@ -230,7 +252,9 @@ export default {
         this.isIEEG(path) ||
         this.isBehavioral(path) ||
         this.isFuncBold(path) ||
-        this.isCont(path)
+        this.isCont(path) ||
+        this.isPETData(path) ||
+        this.isPETBloodData(path)
       )
     },
   },
