@@ -25,6 +25,7 @@ const anatData = buildRegExp(file_level_rules.anat)
 const anatDefacemaskData = buildRegExp(file_level_rules.anat_defacemask)
 const behavioralData = buildRegExp(file_level_rules.behavioral)
 const contData = buildRegExp(file_level_rules.cont)
+const petDataFile = buildRegExp(file_level_rules.pet_data)
 const dwiData = buildRegExp(file_level_rules.dwi)
 const eegData = buildRegExp(file_level_rules.eeg)
 const fieldmapData = buildRegExp(file_level_rules.field_map)
@@ -110,6 +111,8 @@ export default {
      * Check if file is a data file
      */
     isDatafile: function(path) {
+      console.log('Testing: ' + path)
+
       return (
         this.isAssociatedData(path) ||
         this.isTSV(path) ||
@@ -209,7 +212,6 @@ export default {
     },
 
     isPET: function(path) {
-      console.log(path)
       return conditionalMatch(petData, path)
     },
 
@@ -225,6 +227,10 @@ export default {
       return conditionalMatch(contData, path)
     },
 
+    isPETData: function(path) {
+      return conditionalMatch(petDataFile, path)
+    },
+
     hasModality: function(path) {
       return (
         this.isAnat(path) ||
@@ -237,7 +243,8 @@ export default {
         this.isIEEG(path) ||
         this.isBehavioral(path) ||
         this.isFuncBold(path) ||
-        this.isCont(path)
+        this.isCont(path) ||
+        this.isPETData(path)
       )
     },
   },

@@ -227,9 +227,16 @@
   },
 
   "pet": {
-    "regexp": "^\\/(sub-[a-zA-Z0-9]+)\\/(?:(ses-[a-zA-Z0-9]+)\\/)pet\\/(sub-[a-zA-Z0-9]+)_(?:(ses-[a-zA-Z0-9]+))_pet|((@@@_pet_ext_@@@))$",
+    "regexp": "^\\/(sub-[a-zA-Z0-9]+)\\/(?:(ses-[a-zA-Z0-9]+)\\/)pet\\/(sub-[a-zA-Z0-9]+)_(?:(ses-[a-zA-Z0-9]+))|((@@@_pet_ext_@@@))$",
     "tokens": {
-      "@@@_pet_ext_@@@": [".json", "nii.gz"]
+      "@@@_pet_ext_@@@": ["_pet.json", "_pet\\.nii\\.gz", "_pet\\.nii"]
+    }
+  },
+
+  "pet_data": {
+    "regexp": "^\\/(sub-[a-zA-Z0-9]+)\\/(?:(ses-[a-zA-Z0-9]+)\\/)pet\\/(sub-[a-zA-Z0-9]+)_(?:(ses-[a-zA-Z0-9]+))|((@@@_pet_ext_@@@))$",
+    "tokens": {
+      "@@@_pet_ext_@@@": ["_pet\\.nii\\.gz", "_pet\\.nii"]
     }
   },
 
