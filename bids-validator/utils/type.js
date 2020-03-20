@@ -34,6 +34,7 @@ const funcBoldData = buildRegExp(file_level_rules.func_bold)
 const ieegData = buildRegExp(file_level_rules.ieeg)
 const megData = buildRegExp(file_level_rules.meg)
 const stimuliData = buildRegExp(file_level_rules.stimuli)
+const petData = buildRegExp(file_level_rules.pet)
 // Phenotypic data
 const phenotypicData = buildRegExp(phenotypic_rules.phenotypic_data)
 // Session level
@@ -79,7 +80,8 @@ export default {
       this.file.isBehavioral(path) ||
       this.file.isCont(path) ||
       this.file.isFieldMap(path) ||
-      this.file.isPhenotypic(path)
+      this.file.isPhenotypic(path) ||
+      this.file.isPET(path)
     )
   },
 
@@ -204,6 +206,11 @@ export default {
 
     isIEEG: function(path) {
       return conditionalMatch(ieegData, path)
+    },
+
+    isPET: function(path) {
+      console.log(path)
+      return conditionalMatch(petData, path)
     },
 
     isBehavioral: function(path) {
