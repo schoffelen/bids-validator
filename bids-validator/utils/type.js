@@ -111,8 +111,6 @@ export default {
      * Check if file is a data file
      */
     isDatafile: function(path) {
-      console.log('Testing: ' + path)
-
       return (
         this.isAssociatedData(path) ||
         this.isTSV(path) ||

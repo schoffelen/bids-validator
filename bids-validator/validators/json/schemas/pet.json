@@ -1,3 +1,185 @@
 {
+  "type": "object",
+  "properties": {
+    "Info": {
+      "type": "object",
+      "properties": {
+        "Modality": { "type": "string", "minLength": 1 },
+        "Manufacturer": { "type": "string", "minLength": 1 },
+        "ManufacturersModelName": { "type": "string", "minLength": 1 },
+        "Anaesthesia": { "type": "string", "minLength": 1 },
+        "BodyPart": { "type": "string", "minLength": 1 },
+        "BodyWeight": { "type": "number" },
+        "BodyWeightUnit": { "type": "string", "minLength": 1 },
+        "Unit": { "type": "string", "minLength": 1 },
+        "TracerName": { "type": "string", "minLength": 1 },
+        "TracerRadLex": { "type": "string", "minLength": 1 },
+        "TracerSnoMed": { "type": "string", "minLength": 1 },
+        "TracerIsotope": { "type": "string", "minLength": 1 },
+        "TracerMW": { "type": "number" },
+        "TracerInjectionType": { "type": "string", "minLength": 1 },
+        "PharmaceuticalName": { "type": "string", "minLength": 1 },
+        "PharmaceuticalDoseAmount": { "type": "string", "minLength": 1 },
+        "PharmaceuticalDoseUnit": { "type": "string", "minLength": 1 },
+        "PharmaceuticalDoseRegimen": { "type": "string", "minLength": 1 },
+        "PharmaceuticalDoseTime": { "type": "number" },
+        "PharmaceuticalDoseTimeUnits": { "type": "string", "minLength": 1 }
+      }
+    },
+    "RadioChem": {
+      "type": "object",
+      "properties": {
+        "InjectedRadioactivity": { "type": "number" },
+        "InjectedRadioActivityUnits": { "type": "string", "minLength": 1 },
+        "InjectedMass": { "type": "number" },
+        "InjectedMassUnits": { "type": "string", "minLength": 1 },
+        "SpecificActivity": { "type": "number" },
+        "SpecificActivityUnits": { "type": "string", "minLength": 1 },
+        "MolarActivity": { "type": "number" },
+        "MolarActivityUnits": { "type": "string", "minLength": 1 },
+        "MolarActivityMeasTime": { "type": "string", "minLength": 1 },
+        "MinPurity": { "type": "string", "minLength": 1 },
+        "MinPurityUnits": { "type": "string", "minLength": 1 }
+      }
+    },
+    "Time": {
+      "type": "object",
+      "properties": {
+        "ScanStart": { "type": "string", "minLength": 1 },
+        "ScanStartUnits": { "type": "string", "minLength": 1 },
+        "InjectionStart": { "type": "string", "minLength": 1 },
+        "InjectionStartUnits": { "type": "string", "minLength": 1 },
+        "InjectionEnd": { "type": "string", "minLength": 1 },
+        "InjectionEndUnits": { "type": "string", "minLength": 1 },
+        "ModeOfAdministration": { "type": "string", "minLength": 1 },
+        "InfusionSpeed": { "type": "string", "minLength": 1 },
+        "FrameTimesStart": { "type": "array", "items": { "type": "number" } },
+        "FrameTimesStartUnits": { "type": "string", "minLength": 1 },
+        "FrameTimesEnd": { "type": "array", "items": { "type": "number" } },
+        "FrameTimesEndUnits": { "type": "string", "minLength": 1 }
+      }
+    },
+    "Plasma": {
+      "type": "object",
+      "properties": {
+        "FreeFraction": { "type": "string", "minLength": 1 },
+        "FreeFractionMethod": { "type": "string", "minLength": 1 },
+        "PlasmaTimeZero": { "type": "string", "minLength": 1 },
+        "PlasmaTimeZeroUnits": { "type": "string", "minLength": 1 },
+        "PlasmaDecayCorrected": { "type": "boolean" },
+        "PlasmaDecayCorrectionTime": { "type": "string", "minLength": 1 },
+        "PlasmaType": { "type": "string", "minLength": 1 },
+        "PlasmaSampleTime": { "type": "array", "items": { "type": "number" } },
+        "PlasmaSampleTimeUnits": { "type": "string", "minLength": 1 },
+        "PlasmaActivity": { "type": "array", "items": { "type": "number" } },
+        "PlasmaActivityUnits": { "type": "string", "minLength": 1 }
+      }
+    },
+    "Metabolite": {
+      "type": "object",
+      "properties": {
+        "MetaboliteType": { "type": "string", "minLength": 1 },
+        "MetaboliteMethod": { "type": "string", "minLength": 1 },
+        "MetaboliteTimeZero": { "type": "string", "minLength": 1 },
+        "MetaboliteTimeZeroUnits": { "type": "string", "minLength": 1 },
+        "MetaboliteSampleTime": {
+          "type": "array",
+          "items": { "type": "number" }
+        },
+        "MetaboliteSampleTimeUnits": { "type": "string", "minLength": 1 },
+        "MetaboliteParentFraction": {
+          "type": "array",
+          "items": { "type": "number" }
+        },
+        "MetaboliteParentFractionUnits": { "type": "string", "minLength": 1 },
+        "MetabolitePolar": { "type": "array", "items": { "type": "number" } },
+        "MetabolitePolarUnits": { "type": "string", "minLength": 1 },
+        "MetaboliteLipophilic": {
+          "type": "array",
+          "items": { "type": "number" }
+        },
+        "MetaboliteLipophilicUnits": { "type": "string", "minLength": 1 }
+      }
+    },
+    "BloodDiscrete": {
+      "type": "object",
+      "properties": {
+        "Haematocrit": { "type": "string", "minLength": 1 },
+        "BloodDensity": { "type": "string", "minLength": 1 },
+        "BloodDensityUnits": { "type": "string", "minLength": 1 },
+        "BloodDiscreteTimeZero": { "type": "string", "minLength": 1 },
+        "BloodDiscreteTimeZeroUnits": { "type": "string", "minLength": 1 },
+        "BloodDiscreteDecayCorrected": { "type": "boolean" },
+        "BloodDiscreteDecayCorrectionTime": {
+          "type": "string",
+          "minLength": 1
+        },
+        "BloodDiscreteType": { "type": "string", "minLength": 1 },
+        "BloodDiscreteSampleTime": {
+          "type": "array",
+          "items": { "type": "number" }
+        },
+        "BloodDiscreteSampleTimeUnits": { "type": "string", "minLength": 1 },
+        "BloodDiscreteActivity": {
+          "type": "array",
+          "items": { "type": "number" }
+        },
+        "BloodDiscreteActivityUnits": { "type": "string", "minLength": 1 }
+      }
+    },
+    "BloodContinuous": {
+      "type": "object",
+      "properties": {
+        "WithdrawalRate": { "type": "string", "minLength": 1 },
+        "WithdrawalRateUnits": { "type": "string", "minLength": 1 },
+        "TubingLength": { "type": "string", "minLength": 1 },
+        "TubingLengthUnits": { "type": "string", "minLength": 1 },
+        "DispersionConstant": { "type": "string", "minLength": 1 },
+        "DispersionConstantUnits": { "type": "string", "minLength": 1 },
+        "DispersionCorrected": { "type": "boolean" },
+        "BloodContinuousTimeZero": { "type": "string", "minLength": 1 },
+        "BloodContinuousTimeZeroUnits": { "type": "string", "minLength": 1 },
+        "BloodContinuousDecayCorrected": { "type": "boolean" },
+        "BloodContinuousDecayCorrectionTime": {
+          "type": "string",
+          "minLength": 1
+        },
+        "BloodContinuousType": { "type": "string", "minLength": 1 },
+        "BloodContinuousSampleTime": {
+          "type": "array",
+          "items": { "type": "number" }
+        },
+        "BloodContinuousSampleTimeUnits": { "type": "string", "minLength": 1 },
+        "BloodContinuousActivity": {
+          "type": "array",
+          "items": { "type": "number" }
+        },
+        "BloodContinuousActivityUnits": { "type": "string", "minLength": 1 }
+      }
+    },
+    "Glucose": {
+      "type": "object",
+      "properties": {}
+    },
+    "Recon": {
+      "AcquisitionMode": { "type": "string", "minLength": 1 },
+      "DiameterFOV": { "type": "string", "minLength": 1 },
+      "DiameterFOVUnit": { "type": "string", "minLength": 1 },
+      "ReconMatrixSize": { "type": "array", "items": { "type": "number" } },
+      "ImageVoxelSize": { "type": "array", "items": { "type": "number" } },
+      "MethodName": { "type": "string", "minLength": 1 },
+      "MethodParameterLabels": ["subsets", "iterations"],
+      "MethodParameterUnits": ["none", "none"],
+      "MethodParameterValues": {
+        "type": "array",
+        "items": { "type": "number" }
+      },
+      "MethodImplementationVersion": { "type": "string", "minLength": 1 },
+      "FilterType": { "type": "string", "minLength": 1 },
+      "FilterSize": { "type": "array", "items": { "type": "number" } },
+      "AttenuationCorrection": { "type": "string", "minLength": 1 }
+    }
+  },
+
   "required": ["Info"]
 }
