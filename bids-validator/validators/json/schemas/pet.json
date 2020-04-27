@@ -53,9 +53,15 @@
         "InjectionEndUnits": { "type": "string", "minLength": 1 },
         "ModeOfAdministration": { "type": "string", "minLength": 1 },
         "InfusionSpeed": { "type": "string", "minLength": 1 },
-        "FrameTimesStart": { "type": "array", "items": { "type": "number" } },
+        "FrameTimesStart": {
+          "type": "array",
+          "items": { "type": "number" }
+        },
         "FrameTimesStartUnits": { "type": "string", "minLength": 1 },
-        "FrameTimesEnd": { "type": "array", "items": { "type": "number" } },
+        "FrameTimesEnd": {
+          "type": "array",
+          "items": { "type": "number" }
+        },
         "FrameTimesEndUnits": { "type": "string", "minLength": 1 }
       }
     },
@@ -69,9 +75,15 @@
         "PlasmaDecayCorrected": { "type": "boolean" },
         "PlasmaDecayCorrectionTime": { "type": "string", "minLength": 1 },
         "PlasmaType": { "type": "string", "minLength": 1 },
-        "PlasmaSampleTime": { "type": "array", "items": { "type": "number" } },
+        "PlasmaSampleTime": {
+          "type": "array",
+          "items": { "type": "number" }
+        },
         "PlasmaSampleTimeUnits": { "type": "string", "minLength": 1 },
-        "PlasmaActivity": { "type": "array", "items": { "type": "number" } },
+        "PlasmaActivity": {
+          "type": "array",
+          "items": { "type": "number" }
+        },
         "PlasmaActivityUnits": { "type": "string", "minLength": 1 }
       }
     },
@@ -162,24 +174,45 @@
       "properties": {}
     },
     "Recon": {
-      "AcquisitionMode": { "type": "string", "minLength": 1 },
-      "DiameterFOV": { "type": "string", "minLength": 1 },
-      "DiameterFOVUnit": { "type": "string", "minLength": 1 },
-      "ReconMatrixSize": { "type": "array", "items": { "type": "number" } },
-      "ImageVoxelSize": { "type": "array", "items": { "type": "number" } },
-      "MethodName": { "type": "string", "minLength": 1 },
-      "MethodParameterLabels": ["subsets", "iterations"],
-      "MethodParameterUnits": ["none", "none"],
-      "MethodParameterValues": {
-        "type": "array",
-        "items": { "type": "number" }
+      "type": "object",
+      "properties": {
+        "AcquisitionMode": { "type": "string", "minLength": 1 },
+        "DiameterFOV": {
+          "type": "array",
+          "items": { "type": "number" }
+        },
+        "DiameterFOVUnit": { "type": "string", "minLength": 1 },
+        "ReconMatrixSize": {
+          "type": "array",
+          "items": { "type": "number" }
+        },
+        "ImageVoxelSize": {
+          "type": "array",
+          "items": { "type": "number" }
+        },
+        "MethodName": { "type": "string", "minLength": 1 },
+        "MethodParameterLabels": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "MethodParameterUnits": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "MethodParameterValues": {
+          "type": "array",
+          "items": { "type": "number" }
+        },
+        "MethodImplementationVersion": { "type": "string", "minLength": 1 },
+        "FilterType": { "type": "string", "minLength": 1 },
+        "FilterSize": {
+          "type": "array",
+          "items": { "type": "number" }
+        },
+        "AttenuationCorrection": { "type": "string", "minLength": 1 }
       },
-      "MethodImplementationVersion": { "type": "string", "minLength": 1 },
-      "FilterType": { "type": "string", "minLength": 1 },
-      "FilterSize": { "type": "array", "items": { "type": "number" } },
-      "AttenuationCorrection": { "type": "string", "minLength": 1 }
+      "required": ["MethodImplementationVersion", "AttenuationCorrection"]
     }
   },
-
   "required": ["Info"]
 }
