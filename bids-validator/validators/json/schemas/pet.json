@@ -49,10 +49,16 @@
         "InjectedMassUnits": { "type": "string", "minLength": 1 },
         "SpecificRadioactivity": { "type": "number" },
         "SpecificRadioactivityUnits": { "type": "string", "minLength": 1 },
-        "SpecificRadioactivityMeasTime": { "type": "string", "minLength": 1 }, // only hh:mm:ss (regex)
+        "SpecificRadioactivityMeasTime": {
+          "type": "string",
+          "pattern": "^(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]$"
+        },
         "MolarActivity": { "type": "number" },
         "MolarActivityUnits": { "type": "string", "minLength": 1 },
-        "MolarActivityMeasTime": { "type": "string", "minLength": 1 }, // only hh:mm:ss (regex)
+        "MolarActivityMeasTime": {
+          "type": "string",
+          "pattern": "^(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]$"
+        },
         "Purity": { "type": "number" },
         "PurityUnits": { "type": "string", "minLength": 1 },
         "ModeOfAdministration": { "type": "string", "minLength": 1 },
@@ -82,10 +88,22 @@
     "Time": {
       "type": "object",
       "properties": {
-        "ScanDate": { "type": "string", "minLength": 1 }, // only dd:mm:yyyy (regex)
-        "ScanStart": { "type": "string", "minLength": 1 }, // only hh:mm:ss (regex)
-        "InjectionStart": { "type": "string", "minLength": 1 }, // only hh:mm:ss (regex)
-        "InjectionEnd": { "type": "string", "minLength": 1 }, // only hh:mm:ss (regex)
+        "ScanDate": {
+          "type": "string",
+          "pattern": "^(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]$"
+        },
+        "ScanStart": {
+          "type": "string",
+          "pattern": "^(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]$"
+        },
+        "InjectionStart": {
+          "type": "string",
+          "pattern": "^(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]$"
+        },
+        "InjectionEnd": {
+          "type": "string",
+          "pattern": "^(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]$"
+        },
         "FrameTimesStart": {
           "type": "array",
           "items": { "type": "number" }
@@ -112,11 +130,21 @@
       "type": "object",
       "properties": {
         "PlasmaType": { "type": "string", "minLength": 1 },
-        "FreeFraction": { "type": "number" }, // Number between 0 and 1
+        "FreeFraction": {
+          "type": "number",
+          "min": 0,
+          "max": 1
+        },
         "FreeFractionMethod": { "type": "string", "minLength": 1 },
-        "PlasmaTimeZero": { "type": "string", "minLength": 1 }, // hh:mm:ss
+        "PlasmaTimeZero": {
+          "type": "string",
+          "pattern": "^(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]$"
+        },
         "PlasmaDecayCorrected": { "type": "boolean" },
-        "PlasmaDecayCorrectionTime": { "type": "string", "minLength": 1 }, // hh:mm:ss
+        "PlasmaDecayCorrectionTime": {
+          "type": "string",
+          "pattern": "^(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]$"
+        },
         "PlasmaSampleTime": {
           "type": "array",
           "items": { "type": "number" }
@@ -146,7 +174,10 @@
       "properties": {
         "MetaboliteType": { "type": "string", "minLength": 1 },
         "MetaboliteMethod": { "type": "string", "minLength": 1 },
-        "MetaboliteTimeZero": { "type": "string", "minLength": 1 }, // hh:mm:ss
+        "MetaboliteTimeZero": {
+          "type": "string",
+          "pattern": "^(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]$"
+        },
         "MetaboliteSampleTime": {
           "type": "array",
           "items": { "type": "number" }
@@ -154,7 +185,11 @@
         "MetaboliteSampleTimeUnits": { "type": "string", "minLength": 1 },
         "MetaboliteParentFraction": {
           "type": "array",
-          "items": { "type": "number" } // Between 1 and  0
+          "items": {
+            "type": "number",
+            "min": 0,
+            "max": 1
+          }
         },
         "MetaboliteParentFractionUnits": { "type": "string", "minLength": 1 },
         "MetabolitePolar": { "type": "array", "items": { "type": "number" } },
@@ -185,12 +220,15 @@
         "Haematocrit": { "type": "string", "minLength": 1 },
         "BloodDensity": { "type": "string", "minLength": 1 },
         "BloodDensityUnits": { "type": "string", "minLength": 1 },
-        "BloodDiscreteTimeZero": { "type": "string", "minLength": 1 }, // hh:mm:ss
+        "BloodDiscreteTimeZero": {
+          "type": "string",
+          "pattern": "^(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]$"
+        },
         "BloodDiscreteDecayCorrected": { "type": "boolean" },
         "BloodDiscreteDecayCorrectionTime": {
           "type": "string",
-          "minLength": 1
-        }, // hh:mm:ss
+          "pattern": "^(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]$"
+        },
         "BloodDiscreteType": { "type": "string", "minLength": 1 },
         "BloodDiscreteSampleTime": {
           "type": "array",
@@ -227,12 +265,15 @@
         "DispersionCorrected": { "type": "boolean" },
         "DispersionConstant": { "type": "string", "minLength": 1 },
         "DispersionConstantUnits": { "type": "string", "minLength": 1 },
-        "BloodContinuousTimeZero": { "type": "string", "minLength": 1 }, // hh:mm:ss
-        "BloodContinuousDecayCorrected": { "type": "boolean" }, // require time if true
+        "BloodContinuousTimeZero": {
+          "type": "string",
+          "pattern": "^(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]$"
+        },
+        "BloodContinuousDecayCorrected": { "type": "boolean" },
         "BloodContinuousDecayCorrectionTime": {
           "type": "string",
-          "minLength": 1
-        }, // hh:mm:ss
+          "pattern": "^(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]$"
+        },
         "BloodContinuousType": { "type": "string", "minLength": 1 },
         "BloodContinuousSampleTime": {
           "type": "array",
