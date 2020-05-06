@@ -239,28 +239,6 @@
     "FrameTimesStart",
     "FrameTimesEnd",
 
-    "PlasmaType",
-    "PlasmaTimeZero",
-    "PlasmaDecayCorrected",
-    "PlasmaSampleTime",
-    "PlasmaActivity",
-
-    "MetaboliteType",
-    "MetaboliteMethod",
-    "MetaboliteTimeZero",
-    "MetaboliteSampleTime",
-    "MetaboliteParentFraction",
-
-    "Haematocrit",
-    "BloodDiscreteDecayCorrected",
-    "BloodDiscreteType",
-    "BloodDiscreteSampleTime",
-    "BloodDiscreteActivity",
-
-    "BloodContinuousDecayCorrected",
-    "BloodContinuousSampleTime",
-    "BloodContinuousActivity",
-
     "AcquisitionMode",
     "ReconMatrixSize",
     "ImageVoxelSize",
@@ -285,41 +263,7 @@
     "FrameTimesStart": ["FrameTimesStartUnits"],
     "FrameTimesEnd": ["FrameTimesEndUnits"],
 
-    "PlasmaDecayCorrected": ["PlasmaDecayCorrectionTime"],
-    "PlasmaSampleTime": ["PlasmaSampleTimeUnits"],
-    "PlasmaActivity": ["PlasmaActivityUnits"],
-
-    "MetaboliteSampleTime": ["MetaboliteSampleTimeUnits"],
-    "MetaboliteParentFraction": ["MetaboliteParentFractionUnits"],
-    "MetabolitePolar": ["MetabolitePolarUnits"],
-    "MetaboliteLipophilic": ["MetaboliteLipophilicUnits"],
-
-    "BloodDensity": ["BloodDensityUnits"],
-    "BloodDiscreteDecayCorrected": ["BloodDiscreteDecayCorrectionTime"],
-    "BloodDiscreteSampleTime": ["BloodDiscreteSampleTimeUnits"],
-    "BloodDiscreteActivity": ["BloodDiscreteActivityUnits"],
-
-    "WithdrawalRate": ["WithdrawalRateUnits"],
-    "TubingLength": ["TubingLengthUnits"],
-    "DispersionCorrected": ["DispersionConstant", "DispersionConstantUnits"],
-    "BloodContinuousSampleTime": ["BloodContinuousSampleTimeUnits"],
-    "BloodContinuousActivity": ["BloodContinuousActivityUnits"],
-
     "DiameterFOV": ["DiameterFOVUnit"],
     "MethodParameterLabels": ["MethodParameterUnits", "MethodParameterValues"]
-  },
-  "allOf": [
-    {
-      "if": {
-        "properties": {
-          "BloodContinuousDecayCorrected": {
-            "enum": [true]
-          }
-        }
-      },
-      "then": {
-        "required": ["BloodContinuousDecayCorrectionTime"]
-      }
-    }
-  ]
+  }
 }
