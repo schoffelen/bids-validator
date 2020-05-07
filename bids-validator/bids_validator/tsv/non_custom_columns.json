@@ -38,6 +38,7 @@
     "sample",
     "value"
   ],
+  "pet-blood": ["test"],
   "misc": [],
   "participants": ["participant_id", "age", "sex"],
   "phenotype": ["participant_id"],
