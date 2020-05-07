@@ -38,7 +38,15 @@
     "sample",
     "value"
   ],
-  "pet-blood": ["test"],
+  "pet-blood": [
+    "Time",
+    "PlasmaActivity",
+    "BloodDiscreteActivity",
+    "BloodContinuousActivity",
+    "MetaboliteParentFraction",
+    "MetabolitePolar",
+    "MetaboliteLipohilic"
+  ],
   "misc": [],
   "participants": ["participant_id", "age", "sex"],
   "phenotype": ["participant_id"],
