@@ -286,11 +286,6 @@ const TSV = (file, contents, fileList, callback) => {
     // Validate fields here
     checkheader('Time', 0, file, 126)
     checkheader('PlasmaActivity', 1, file, 126)
-    checkheader('BloodDiscreteActivity', 2, file, 126)
-    checkheader('BloodContinuousActivity', 3, file, 126)
-    checkheader('MetaboliteParentFraction', 4, file, 126)
-    checkheader('MetabolitePolar', 5, file, 126)
-    checkheader('MetaboliteLipohilic', 6, file, 126)
   }
 
   // check partcipants.tsv for age 89+
