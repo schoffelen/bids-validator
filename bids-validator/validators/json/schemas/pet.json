@@ -6,12 +6,9 @@
     "ManufacturersModelName": { "type": "string", "minLength": 1 },
     "Anaesthesia": { "type": "string", "minLength": 1 },
     "BodyPart": { "type": "string", "minLength": 1 },
-    "BodyWeight": { "type": "number" },
-    "BodyWeightUnit": { "type": "string", "minLength": 1 },
     "Unit": {
       "type": "string",
-      "minLength": 1,
-      "enum": ["becquerel per milliliter"]
+      "minLength": 1
     },
     "TracerName": { "type": "string", "minLength": 1 },
     "TracerRadLex": { "type": "string", "minLength": 1 },
@@ -33,16 +30,19 @@
       "enum": ["megabecquerel"]
     },
     "InjectedMass": { "type": "number" },
-    "InjectedMassUnits": {
+    "InjectedMassUnit": {
       "type": "string",
-      "minLength": 1,
-      "enum": ["micrograms", "milligrams", "grams"]
+      "minLength": 1
+    },
+    "InjectedMassPerWeight": { "type": "number" },
+    "InjectedMassPerWeightUnit": {
+      "type": "string",
+      "minLength": 1
     },
     "SpecificRadioactivity": { "type": "number" },
     "SpecificRadioactivityUnit": {
       "type": "string",
-      "minLength": 1,
-      "enum": ["becquerel per grams", "gigabecquerel per micrograms"]
+      "minLength": 1
     },
     "SpecificRadioactivityMeasTime": {
       "type": "string",
@@ -51,8 +51,7 @@
     "MolarActivity": { "type": "number" },
     "MolarActivityUnit": {
       "type": "string",
-      "minLength": 1,
-      "enum": ["becquerel per molar", "gigabecquerel per micromolar"]
+      "minLength": 1
     },
     "MolarActivityMeasTime": {
       "type": "string",
@@ -64,7 +63,7 @@
     "InjectedVolume": { "type": "number" },
     "InjectedVolumeUnit": { "type": "string", "minLength": 1 },
     "Purity": { "type": "number" },
-    "PurityUnits": { "type": "string", "minLength": 1 },
+    "PurityUnit": { "type": "string", "minLength": 1 },
 
     "ScanDate": {
       "type": "string",
@@ -90,12 +89,12 @@
       "type": "array",
       "items": { "type": "number" }
     },
-    "FrameTimesStartUnits": { "type": "string", "minLength": 1 },
+    "FrameTimesStartUnit": { "type": "string", "minLength": 1 },
     "FrameTimesEnd": {
       "type": "array",
       "items": { "type": "number" }
     },
-    "FrameTimesEndUnits": { "type": "string", "minLength": 1 },
+    "FrameTimesEndUnit": { "type": "string", "minLength": 1 },
 
     "AcquisitionMode": { "type": "string", "minLength": 1 },
     "ImageDecayCorrected": { "type": "boolean" },
@@ -143,8 +142,80 @@
       "items": { "type": "number" }
     },
     "AttenuationCorrection": { "type": "string", "minLength": 1 },
-    "AttenuationCorrectionMethodReference": { "type": "string", "minLength": 1 }
+    "AttenuationCorrectionMethodReference": {
+      "type": "string",
+      "minLength": 1
+    },
+    "ScaleFactor": {
+      "type": "array",
+      "items": { "type": "number" }
+    },
+    "ScatterFraction": {
+      "type": "array",
+      "items": { "type": "number" }
+    },
+    "DecayCorretionFactor": {
+      "type": "array",
+      "items": { "type": "number" }
+    },
+    "PromptRate": {
+      "type": "array",
+      "items": { "type": "number" }
+    },
+    "RandomRate": {
+      "type": "array",
+      "items": { "type": "number" }
+    },
+    "SinglesRate": {
+      "type": "array",
+      "items": { "type": "number" }
+    },
+
+    "BloodAvail": { "type": "boolean" }
   },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "BloodAvail": {
+            "enum": [true]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "PlasmaAvail",
+          "MetaboliteAvail",
+          "ContinousBloodAvail",
+          "DiscreteBloodAvail"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "MetaboliteAvail": {
+            "enum": [true]
+          }
+        }
+      },
+      "then": {
+        "required": ["MetaboliteMethod", "MetaboliteRecoveryCorrectionApplied"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "ContinousBloodAvail": {
+            "enum": [true]
+          }
+        }
+      },
+      "then": {
+        "required": ["ContinousBloodDispersionCorrected"]
+      }
+    }
+  ],
   "required": [
     "Modality",
     "Manufacturer",
@@ -156,7 +227,7 @@
     "InjectedRadioactivity",
     "InjectedRadioactivityUnit",
     "InjectedMass",
-    "InjectedMassUnits",
+    "InjectedMassUnit",
     "SpecificRadioactivity",
     "SpecificRadioactivityUnit",
     "ModeOfAdministration",
@@ -165,9 +236,9 @@
     "InjectionStart",
     "TimeZero",
     "FrameTimesStart",
-    "FrameTimesStartUnits",
-    "FrameTimesEnd",
-    "FrameTimesEndUnits",
+    "FrameTimesStartUnit",
+    "FrameDuration",
+    "FrameDurationUnit",
     "AcquisitionMode",
     "ImageDecayCorrected",
     "ImageDecayCorrectionTime",
@@ -179,22 +250,25 @@
     "ReconMethodParameterValues",
     "ReconFilterType",
     "ReconFilterSize",
-    "AttenuationCorrection"
+    "AttenuationCorrection",
+
+    "BloodAvail"
   ],
   "dependencies": {
     "TracerMolecularWeight": ["TracerMolecularWeightUnit"],
     "BodyWeight": ["BodyWeightUnit"],
 
     "InjectedRadioactivity": ["InjectedRadioActivityUnit"],
-    "InjectedMass": ["InjectedMassUnits"],
+    "InjectedMass": ["InjectedMassUnit"],
+    "InjectedMassPerWeight": ["InjectedMassPerWeightUnit"],
     "MolarActivity": ["MolarActivityUnit"],
     "SpecificRadioactivity": ["SpecificRadioactivityUnit"],
-    "Purity": ["PurityUnits"],
+    "Purity": ["PurityUnit"],
     "InfusionSpeed": ["InfusionSpeedUnit"],
     "InjectedVolume": ["InjectedVolumeUnit"],
 
-    "FrameTimesStart": ["FrameTimesStartUnits"],
-    "FrameTimesEnd": ["FrameTimesEndUnits"],
+    "FrameTimesStart": ["FrameTimesStartUnit"],
+    "FrameDuration": ["FrameDurationUnit"],
 
     "DiameterFOV": ["DiameterFOVUnit"],
     "ReconMethodParameterLabels": [
