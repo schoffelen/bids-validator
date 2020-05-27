@@ -38,7 +38,7 @@
     "sample",
     "value"
   ],
-  "pet-blood": ["Time", "PlasmaActivity"],
+  "blood": ["Time", "PlasmaActivity"],
   "misc": [],
   "participants": ["participant_id", "age", "sex"],
   "phenotype": ["participant_id"],
