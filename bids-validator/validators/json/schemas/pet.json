@@ -18,10 +18,10 @@
     "TracerMolecularWeightUnit": { "type": "string", "minLength": 1 },
     "PharmaceuticalName": { "type": "string", "minLength": 1 },
     "PharmaceuticalDoseAmount": { "type": "string", "minLength": 1 },
-    "PharmaceuticalDoseUnits": { "type": "string", "minLength": 1 },
+    "PharmaceuticalDoseUnit": { "type": "string", "minLength": 1 },
     "PharmaceuticalDoseRegimen": { "type": "string", "minLength": 1 },
     "PharmaceuticalDoseTime": { "type": "number" },
-    "PharmaceuticalDoseTimeUnits": { "type": "string", "minLength": 1 },
+    "PharmaceuticalDoseTimeUnit": { "type": "string", "minLength": 1 },
 
     "InjectedRadioactivity": { "type": "number" },
     "InjectedRadioactivityUnit": { "type": "string", "minLength": 1 },
@@ -164,130 +164,43 @@
       "items": { "type": "number" }
     },
 
-    "MetaboliteAvail": {
-      "default": false,
-      "type": "boolean"
-    },
     "PlasmaAvail": {
       "default": false,
       "type": "boolean"
     },
-    "ContinousBloodAvail": {
-      "default": false,
-      "type": "boolean"
-    },
-    "DiscreteBloodAvail": {
-      "default": false,
-      "type": "boolean"
-    },
-
-    "Modality": { "type": "string", "minLength": 1 },
-    "PlasmaType": { "type": "string", "minLength": 1 },
-    "FreeFraction": {
+    "PlasmaFreeFraction": {
       "type": "number",
       "min": 0,
       "max": 1
     },
-    "FreeFractionMethod": { "type": "string", "minLength": 1 },
-    "PlasmaTimeZero": {
-      "type": "string",
-      "pattern": "^(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]$"
-    },
-    "PlasmaDecayCorrected": { "type": "boolean" },
-    "PlasmaDecayCorrectionTime": {
-      "type": "string",
-      "pattern": "^(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]$"
-    },
-    "PlasmaSampleTime": {
-      "type": "array",
-      "items": { "type": "number" }
-    },
-    "PlasmaSampleTimeUnits": { "type": "string", "minLength": 1 },
-    "PlasmaActivity": {
-      "type": "array",
-      "items": { "type": "number" }
-    },
-    "PlasmaActivityUnits": { "type": "string", "minLength": 1 },
+    "PlasmaFreeFractionMethod": { "type": "string", "minLength": 1 },
 
-    "MetaboliteType": { "type": "string", "minLength": 1 },
+    "MetaboliteAvail": {
+      "default": false,
+      "type": "boolean"
+    },
     "MetaboliteMethod": { "type": "string", "minLength": 1 },
-    "MetaboliteTimeZero": {
-      "type": "string",
-      "pattern": "^(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]$"
-    },
-    "MetaboliteSampleTime": {
-      "type": "array",
-      "items": { "type": "number" }
-    },
-    "MetaboliteSampleTimeUnits": { "type": "string", "minLength": 1 },
-    "MetaboliteParentFraction": {
-      "type": "array",
-      "items": {
-        "type": "number",
-        "min": 0,
-        "max": 1
-      }
-    },
-    "MetaboliteParentFractionUnits": { "type": "string", "minLength": 1 },
-    "MetabolitePolar": { "type": "array", "items": { "type": "number" } },
-    "MetabolitePolarUnits": { "type": "string", "minLength": 1 },
-    "MetaboliteLipophilic": {
-      "type": "array",
-      "items": { "type": "number" }
-    },
-    "MetaboliteLipophilicUnits": { "type": "string", "minLength": 1 },
+    "MetaboliteRecoveryCorrectionApplied": { "type": "boolean" },
 
-    "Haematocrit": { "type": "string", "minLength": 1 },
-    "BloodDensity": { "type": "string", "minLength": 1 },
-    "BloodDensityUnits": { "type": "string", "minLength": 1 },
-    "BloodDiscreteTimeZero": {
-      "type": "string",
-      "pattern": "^(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]$"
+    "ContinousBloodAvail": {
+      "default": false,
+      "type": "boolean"
     },
-    "BloodDiscreteDecayCorrected": { "type": "boolean" },
-    "BloodDiscreteDecayCorrectionTime": {
-      "type": "string",
-      "pattern": "^(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]$"
-    },
-    "BloodDiscreteType": { "type": "string", "minLength": 1 },
-    "BloodDiscreteSampleTime": {
-      "type": "array",
-      "items": { "type": "number" }
-    },
-    "BloodDiscreteSampleTimeUnits": { "type": "string", "minLength": 1 },
-    "BloodDiscreteActivity": {
-      "type": "array",
-      "items": { "type": "number" }
-    },
-    "BloodDiscreteActivityUnits": { "type": "string", "minLength": 1 },
+    "ContinousBloodWithdrawalRateUnit": { "type": "string" },
+    "ContinousBloodTubingType": { "type": "string" },
+    "ContinousBloodTubingLength": { "type": "number" },
+    "ContinousBloodTubingLengthUnits": { "type": "string" },
+    "ContinousBloodDispersionConstant": { "type": "number" },
+    "ContinousBloodDispersionConstantUnits": { "type": "string" },
+    "ContinousBloodDispersionCorrected": { "type": "boolean" },
 
-    "WithdrawalRate": { "type": "string", "minLength": 1 },
-    "WithdrawalRateUnits": { "type": "string", "minLength": 1 },
-    "TubingLength": { "type": "string", "minLength": 1 },
-    "TubingLengthUnits": { "type": "string", "minLength": 1 },
-    "DispersionCorrected": { "type": "boolean" },
-    "DispersionConstant": { "type": "string", "minLength": 1 },
-    "DispersionConstantUnits": { "type": "string", "minLength": 1 },
-    "BloodContinuousTimeZero": {
-      "type": "string",
-      "pattern": "^(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]$"
+    "BloodDiscreteAvail": {
+      "default": false,
+      "type": "boolean"
     },
-    "BloodContinuousDecayCorrected": { "type": "boolean" },
-    "BloodContinuousDecayCorrectionTime": {
-      "type": "string",
-      "pattern": "^(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]$"
-    },
-    "BloodContinuousType": { "type": "string", "minLength": 1 },
-    "BloodContinuousSampleTime": {
-      "type": "array",
-      "items": { "type": "number" }
-    },
-    "BloodContinuousSampleTimeUnits": { "type": "string", "minLength": 1 },
-    "BloodContinuousActivity": {
-      "type": "array",
-      "items": { "type": "number" }
-    },
-    "BloodContinuousActivityUnits": { "type": "string", "minLength": 1 }
+    "BloodDiscreteHaematocrit": { "type": "string", "minLength": 1 },
+    "BloodDiscreteDensity": { "type": "string", "minLength": 1 },
+    "BloodDiscreteDensityUnit": { "type": "string", "minLength": 1 }
   },
   "allOf": [
     {
