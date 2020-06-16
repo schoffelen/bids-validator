@@ -62,14 +62,8 @@
       "type": "string",
       "pattern": "^(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]$"
     },
-    "ScanStart": {
-      "type": "string",
-      "pattern": "^(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]$"
-    },
-    "InjectionStart": {
-      "type": "string",
-      "pattern": "^(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]$"
-    },
+    "ScanStart": { "type": "number" },
+    "InjectionStart": { "type": "number" },
     "InjectionEnd": {
       "type": "string",
       "pattern": "^(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]$"
@@ -82,7 +76,10 @@
       "type": "array",
       "items": { "type": "number" }
     },
-    "FrameTimesStartUnit": { "type": "string", "minLength": 1 },
+    "FrameDuration": {
+      "type": "array",
+      "items": { "type": "number" }
+    },
     "FrameTimesEnd": {
       "type": "array",
       "items": { "type": "number" }
@@ -91,10 +88,7 @@
 
     "AcquisitionMode": { "type": "string", "minLength": 1 },
     "ImageDecayCorrected": { "type": "boolean" },
-    "ImageDecayCorrectionTime": {
-      "type": "string",
-      "pattern": "^(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]$"
-    },
+    "ImageDecayCorrectionTime": { "type": "number" },
     "DiameterFOV": {
       "type": "array",
       "items": { "type": "number" }
@@ -182,17 +176,17 @@
     "MetaboliteMethod": { "type": "string", "minLength": 1 },
     "MetaboliteRecoveryCorrectionApplied": { "type": "boolean" },
 
-    "ContinousBloodAvail": {
+    "ContinuousBloodAvail": {
       "default": false,
       "type": "boolean"
     },
-    "ContinousBloodWithdrawalRateUnit": { "type": "string" },
-    "ContinousBloodTubingType": { "type": "string" },
-    "ContinousBloodTubingLength": { "type": "number" },
-    "ContinousBloodTubingLengthUnits": { "type": "string" },
-    "ContinousBloodDispersionConstant": { "type": "number" },
-    "ContinousBloodDispersionConstantUnits": { "type": "string" },
-    "ContinousBloodDispersionCorrected": { "type": "boolean" },
+    "ContinuousBloodWithdrawalRateUnit": { "type": "string" },
+    "ContinuousBloodTubingType": { "type": "string" },
+    "ContinuousBloodTubingLength": { "type": "number" },
+    "ContinuousBloodTubingLengthUnits": { "type": "string" },
+    "ContinuousBloodDispersionConstant": { "type": "number" },
+    "ContinuousBloodDispersionConstantUnits": { "type": "string" },
+    "ContinuousBloodDispersionCorrected": { "type": "boolean" },
 
     "BloodDiscreteAvail": {
       "default": false,
@@ -218,13 +212,13 @@
     {
       "if": {
         "properties": {
-          "ContinousBloodAvail": {
+          "ContinuousBloodAvail": {
             "enum": [true]
           }
         }
       },
       "then": {
-        "required": ["ContinousBloodDispersionCorrected"]
+        "required": ["ContinuousBloodDispersionCorrected"]
       }
     }
   ],
@@ -248,9 +242,7 @@
     "InjectionStart",
     "TimeZero",
     "FrameTimesStart",
-    "FrameTimesStartUnit",
     "FrameDuration",
-    "FrameDurationUnit",
     "AcquisitionMode",
     "ImageDecayCorrected",
     "ImageDecayCorrectionTime",
@@ -266,7 +258,7 @@
 
     "MetaboliteAvail",
     "PlasmaAvail",
-    "ContinousBloodAvail",
+    "ContinuousBloodAvail",
     "DiscreteBloodAvail"
   ],
   "dependencies": {
@@ -281,9 +273,6 @@
     "Purity": ["PurityUnit"],
     "InfusionSpeed": ["InfusionSpeedUnit"],
     "InjectedVolume": ["InjectedVolumeUnit"],
-
-    "FrameTimesStart": ["FrameTimesStartUnit"],
-    "FrameDuration": ["FrameDurationUnit"],
 
     "DiameterFOV": ["DiameterFOVUnit"],
     "ReconMethodParameterLabels": [
