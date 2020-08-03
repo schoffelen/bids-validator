@@ -21,7 +21,9 @@ import top_level_rules from '../bids_validator/rules/top_level_rules.json'
 // Associated data
 const associatedData = buildRegExp(associated_data_rules.associated_data)
 // File level
-const allAnatData = Object.values(anat_file_level_rules).map(elem => buildRegExp(elem))
+const allAnatData = Object.values(anat_file_level_rules).map(elem =>
+  buildRegExp(elem),
+)
 const behavioralData = buildRegExp(file_level_rules.behavioral)
 const contData = buildRegExp(file_level_rules.cont)
 const dwiData = buildRegExp(file_level_rules.dwi)
@@ -163,7 +165,7 @@ export default {
      */
     isAnat: function(path) {
       let isAnat = false
-      allAnatData.map(elem => isAnat = isAnat || conditionalMatch(elem, path))
+      allAnatData.map(elem => (isAnat = isAnat || conditionalMatch(elem, path)))
       return isAnat
     },
 
