@@ -12,6 +12,7 @@
 import associated_data_rules from '../bids_validator/rules/associated_data_rules.json'
 
 import file_level_rules from '../bids_validator/rules/file_level_rules.json'
+import anat_file_level_rules from '../bids_validator/rules/anatomical_file_level_rules.json'
 import phenotypic_rules from '../bids_validator/rules/phenotypic_rules.json'
 import session_level_rules from '../bids_validator/rules/session_level_rules.json'
 import subject_level_rules from '../bids_validator/rules/subject_level_rules.json'
@@ -20,8 +21,7 @@ import top_level_rules from '../bids_validator/rules/top_level_rules.json'
 // Associated data
 const associatedData = buildRegExp(associated_data_rules.associated_data)
 // File level
-const anatData = buildRegExp(file_level_rules.anat)
-const anatDefacemaskData = buildRegExp(file_level_rules.anat_defacemask)
+const allAnatData = Object.values(anat_file_level_rules).map(elem => buildRegExp(elem))
 const behavioralData = buildRegExp(file_level_rules.behavioral)
 const contData = buildRegExp(file_level_rules.cont)
 const dwiData = buildRegExp(file_level_rules.dwi)
@@ -162,10 +162,9 @@ export default {
      * Check if the file has a name appropriate for an anatomical scan
      */
     isAnat: function(path) {
-      return (
-        conditionalMatch(anatData, path) ||
-        conditionalMatch(anatDefacemaskData, path)
-      )
+      let isAnat = false
+      allAnatData.map(elem => isAnat = isAnat || conditionalMatch(elem, path))
+      return isAnat
     },
 
     /**
