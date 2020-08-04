@@ -93,19 +93,6 @@
       "type": "array",
       "items": { "type": "number" }
     },
-    "DiameterFOVUnit": { "type": "string", "minLength": 1 },
-    "ImageOrientation": {
-      "type": "array",
-      "items": { "type": "string" }
-    },
-    "ReconMatrixSize": {
-      "type": "array",
-      "items": { "type": "number" }
-    },
-    "ImageVoxelSize": {
-      "type": "array",
-      "items": { "type": "number" }
-    },
     "ReconMethodName": { "type": "string", "minLength": 1 },
     "ReconMethodParameterLabels": {
       "type": "array",
@@ -223,7 +210,6 @@
     }
   ],
   "required": [
-    "Modality",
     "Manufacturer",
     "ManufacturersModelName",
     "Unit",
@@ -246,8 +232,6 @@
     "AcquisitionMode",
     "ImageDecayCorrected",
     "ImageDecayCorrectionTime",
-    "ReconMatrixSize",
-    "ImageVoxelSize",
     "ReconMethodName",
     "ReconMethodParameterLabels",
     "ReconMethodParameterUnit",
@@ -274,7 +258,6 @@
     "InfusionSpeed": ["InfusionSpeedUnit"],
     "InjectedVolume": ["InjectedVolumeUnit"],
 
-    "DiameterFOV": ["DiameterFOVUnit"],
     "ReconMethodParameterLabels": [
       "ReconMethodParameterUnit",
       "ReconMethodParameterValues"
