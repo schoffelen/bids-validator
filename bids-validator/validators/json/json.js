@@ -112,6 +112,14 @@ const selectSchema = file => {
     ) {
       schema = require('./schemas/genetic_info.json')
     }
+    const qmri_schemas = ["B1DAM.json", "IRT1.json", "MEGRE.json", "MESE.json",
+                          "MP2RAGE.json", "MPM.json", "MTR.json", "MTS.json",
+                          "VFA.json"]
+    qmri.map(q_schema => {
+      if (file.name.endsWith(q_schema)) {
+        schema = require(`./schemas/qmri/${q_schema}`)
+      }
+    }
   }
   return schema
 }

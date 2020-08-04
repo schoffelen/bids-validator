@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "type": "object",
+  "properties": {
+    "FlipAngle": {
+      "type": "number"
+    },
+    "RepetitionTimeExcitation": {
+      "type": "number"
+    },
+    "InversionTime": {
+      "type": "number"
+    },
+    "RepetitionTimePreperation": {
+      "type": "number"
+    },
+    "NumberShots": {
+      "type": "number"
+    },
+    "EchoTime": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "FlipAngle",
+    "InversionTime",
+    "RepetitionTimeExcitation",
+    "RepetitionTimePreperation",
+    "NumberShots"
+  ]
+}

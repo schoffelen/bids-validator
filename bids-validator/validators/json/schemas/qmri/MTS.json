@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "type": "object",
+  "properties": {
+    "FlipAngle": {
+      "type": "number"
+    },
+    "RepetitionTimePreperation": {
+      "type": "number"
+    },
+    "MTState": {
+      "type": "string",
+      "enum": ["on", "off"]
+    }
+  },
+  "required": ["FlipAngle", "MTState", "RepetitionTimeExcitation"]
+}

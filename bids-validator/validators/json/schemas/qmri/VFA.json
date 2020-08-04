@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "type": "object",
+  "properties": {
+    "FlipAngle": {
+      "type": "number"
+    },
+    "PulseSequenceType": {
+      "type": "string"
+    },
+    "RepetitionTimeExcitation": {
+      "type": "number"
+    },
+    "InversionTime": {
+      "type": "number"
+    },
+    "RepetitionTimePreperation": {
+      "type": "number"
+    },
+    "NumberShots": {
+      "type": "number"
+    },
+    "EchoTime": {
+      "type": "number"
+    },
+    "MTState": {
+      "type": "string",
+      "enum": ["on", "off"]
+    },
+    "SpoilingRFPhaseIncrement": {
+      "type": "number"
+    }
+  },
+  "required": ["InversionTime"]
+}
