@@ -195,6 +195,20 @@
       "then": {
         "required": ["ContinuousBloodDispersionCorrected"]
       }
+    },
+    {
+      "if": {
+        "properties": {
+          "TracerName": {
+            "enum": ["FDG"]
+          }
+        }
+      },
+      "then": {
+      },
+      "else": {
+        "required": ["InjectedMass", "InjectedMassUnit", "SpecificRadioactivity", "SpecificRadioactivityUnit"]
+      }
     }
   ],
   "required": [
@@ -206,10 +220,6 @@
 
     "InjectedRadioactivity",
     "InjectedRadioactivityUnit",
-    "InjectedMass",
-    "InjectedMassUnit",
-    "SpecificRadioactivity",
-    "SpecificRadioactivityUnit",
     "ModeOfAdministration",
 
     "ScanStart",
