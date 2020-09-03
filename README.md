@@ -12,7 +12,6 @@
 * [BIDS-Validator](#bids-validator)
    * [Quickstart](#quickstart)
    * [Support](#support)
-   * [Maintainers and Contributors](#maintainers-and-contributors)
    * [Use](#use)
       * [API](#api)
       * [.bidsignore](#bidsignore)
@@ -28,6 +27,7 @@
       * [Testing](#testing)
       * [Publishing](#publishing)
    * [Acknowledgments](#acknowledgments)
+   * [Maintainers and Contributors](#maintainers-and-contributors) 
 
 ## Quickstart
 
@@ -72,14 +72,6 @@ If you experience issues outside of these supported environments and believe we
 should extend our targeted support feel free to open a new issue describing the
 issue, your support target and why you require extended support and we will
 address these issues on a case by case basis.
-
-## Maintainers and Contributors
-
-This package is maintained by [@rwblair](https://github.com/rwblair/).
-
-Some of our awesome contributors include:
-
-[![](https://sourcerer.io/fame/chrisfilo/bids-standard/bids-validator/images/0)](https://sourcerer.io/fame/chrisfilo/bids-standard/bids-validator/links/0)[![](https://sourcerer.io/fame/chrisfilo/bids-standard/bids-validator/images/1)](https://sourcerer.io/fame/chrisfilo/bids-standard/bids-validator/links/1)[![](https://sourcerer.io/fame/chrisfilo/bids-standard/bids-validator/images/2)](https://sourcerer.io/fame/chrisfilo/bids-standard/bids-validator/links/2)[![](https://sourcerer.io/fame/chrisfilo/bids-standard/bids-validator/images/3)](https://sourcerer.io/fame/chrisfilo/bids-standard/bids-validator/links/3)[![](https://sourcerer.io/fame/chrisfilo/bids-standard/bids-validator/images/4)](https://sourcerer.io/fame/chrisfilo/bids-standard/bids-validator/links/4)[![](https://sourcerer.io/fame/chrisfilo/bids-standard/bids-validator/images/5)](https://sourcerer.io/fame/chrisfilo/bids-standard/bids-validator/links/5)[![](https://sourcerer.io/fame/chrisfilo/bids-standard/bids-validator/images/6)](https://sourcerer.io/fame/chrisfilo/bids-standard/bids-validator/links/6)[![](https://sourcerer.io/fame/chrisfilo/bids-standard/bids-validator/images/7)](https://sourcerer.io/fame/chrisfilo/bids-standard/bids-validator/links/7)
 
 ## Use
 
@@ -388,9 +380,13 @@ funded projects/grants:
 - [Spokes: MEDIUM: WEST (NSF: 1760950, PI: Poldrack & Gorgolewski)](http://grantome.com/grant/NSF/IIS-1760950)
 - [ReproNim](http://repronim.org) [(NIH-NIBIB P41 EB019936, PI: Kennedy)](https://projectreporter.nih.gov/project_info_description.cfm?aid=8999833)
 
-## Contributors ✨
+## Maintainers and Contributors
 
-Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification.
+Contributions of any kind welcome! 
+
+The project is maintained by [@rwblair](https://github.com/rwblair/) with the help of many contributors listed below.
+(The [emoji key](https://allcontributors.org/docs/en/emoji-key) is indicating the kind of contribution)
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
@@ -404,5 +400,3 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
 <!-- ALL-CONTRIBUTORS-LIST:END -->
-
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
