@@ -131,71 +131,9 @@
     "SinglesRate": {
       "type": "array",
       "items": { "type": "number" }
-    },
-
-    "PlasmaAvail": {
-      "default": false,
-      "type": "boolean"
-    },
-    "PlasmaFreeFraction": {
-      "type": "number",
-      "min": 0,
-      "max": 1
-    },
-    "PlasmaFreeFractionMethod": { "type": "string", "minLength": 1 },
-
-    "MetaboliteAvail": {
-      "default": false,
-      "type": "boolean"
-    },
-    "MetaboliteMethod": { "type": "string", "minLength": 1 },
-    "MetaboliteRecoveryCorrectionApplied": { "type": "boolean" },
-
-    "ContinuousBloodAvail": {
-      "default": false,
-      "type": "boolean"
-    },
-    "ContinuousBloodWithdrawalRateUnit": { "type": "string" },
-    "ContinuousBloodTubingType": { "type": "string" },
-    "ContinuousBloodTubingLength": { "type": "number" },
-    "ContinuousBloodTubingLengthUnits": { "type": "string" },
-    "ContinuousBloodDispersionConstant": { "type": "number" },
-    "ContinuousBloodDispersionConstantUnits": { "type": "string" },
-    "ContinuousBloodDispersionCorrected": { "type": "boolean" },
-
-    "BloodDiscreteAvail": {
-      "default": false,
-      "type": "boolean"
-    },
-    "BloodDiscreteHaematocrit": { "type": "string", "minLength": 1 },
-    "BloodDiscreteDensity": { "type": "string", "minLength": 1 },
-    "BloodDiscreteDensityUnit": { "type": "string", "minLength": 1 }
+    }
   },
   "allOf": [
-    {
-      "if": {
-        "properties": {
-          "MetaboliteAvail": {
-            "enum": [true]
-          }
-        }
-      },
-      "then": {
-        "required": ["MetaboliteMethod", "MetaboliteRecoveryCorrectionApplied"]
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "ContinuousBloodAvail": {
-            "enum": [true]
-          }
-        }
-      },
-      "then": {
-        "required": ["ContinuousBloodDispersionCorrected"]
-      }
-    },
     {
       "if": {
         "properties": {
@@ -236,12 +174,7 @@
     "ReconMethodParameterValues",
     "ReconFilterType",
     "ReconFilterSize",
-    "AttenuationCorrection",
-
-    "MetaboliteAvail",
-    "PlasmaAvail",
-    "ContinuousBloodAvail",
-    "DiscreteBloodAvail"
+    "AttenuationCorrection"
   ],
   "dependencies": {
     "TracerMolecularWeight": ["TracerMolecularWeightUnit"],
@@ -259,27 +192,6 @@
     "ReconMethodParameterLabels": [
       "ReconMethodParameterUnit",
       "ReconMethodParameterValues"
-    ],
-
-    "PlasmaDecayCorrected": ["PlasmaDecayCorrectionTime"],
-    "PlasmaSampleTime": ["PlasmaSampleTimeUnits"],
-    "PlasmaActivity": ["PlasmaActivityUnits"],
-
-    "MetaboliteSampleTime": ["MetaboliteSampleTimeUnits"],
-    "MetaboliteParentFraction": ["MetaboliteParentFractionUnits"],
-    "MetabolitePolar": ["MetabolitePolarUnits"],
-    "MetaboliteLipophilic": ["MetaboliteLipophilicUnits"],
-
-    "BloodDensity": ["BloodDensityUnits"],
-    "BloodDiscreteDecayCorrected": ["BloodDiscreteDecayCorrectionTime"],
-    "BloodDiscreteSampleTime": ["BloodDiscreteSampleTimeUnits"],
-    "BloodDiscreteActivity": ["BloodDiscreteActivityUnits"],
-
-    "WithdrawalRate": ["WithdrawalRateUnits"],
-    "TubingLength": ["TubingLengthUnits"],
-    "DispersionCorrected": ["DispersionConstant", "DispersionConstantUnits"],
-    "BloodContinuousSampleTime": ["BloodContinuousSampleTimeUnits"],
-    "BloodContinuousActivity": ["BloodContinuousActivityUnits"],
-    "BloodContinuousDecayCorrected": ["BloodContinuousDecayCorrectionTime"]
+    ]
   }
 }
