@@ -79,6 +79,7 @@ describe('utils.type.file.isTopLevel', function() {
   const goodFilenames = [
     '/README',
     '/CHANGES',
+    '/LICENSE',
     '/dataset_description.json',
     '/ses-pre_task-rest_bold.json',
     '/dwi.bval',
@@ -101,11 +102,16 @@ describe('utils.type.file.isTopLevel', function() {
   const badFilenames = [
     '/readme.txt',
     '/changelog',
+    '/license.txt',
     '/dataset_description.yml',
     '/ses.json',
     '/_T1w.json',
     '/_dwi.json',
     '/_task-test_physio.json',
+    // cross-talk and fine-calibration files for Neuromag/Elekta/MEGIN data (.fif)
+    // must be defined at file level.
+    '/acq-calibration_meg.dat',
+    '/acq-crosstalk_meg.fif',
   ]
 
   badFilenames.forEach(function(path) {
@@ -116,10 +122,41 @@ describe('utils.type.file.isTopLevel', function() {
   })
 })
 
+describe('utils.type.file.isSubjectLevel', () => {
+  const goodFilenames = [] // to be extended in the future...
+
+  goodFilenames.forEach(path => {
+    it("isSubjectLevel('" + path + "') === true", function(isdone) {
+      assert.equal(utils.type.file.isSubjectLevel(path), true)
+      isdone()
+    })
+  })
+
+  const badFilenames = [
+    // cross-talk and fine-calibration files for Neuromag/Elekta/MEGIN data (.fif)
+    // must be placed on file level.
+    '/sub-12/sub-12_acq-calibration_meg.dat',
+    '/sub-12/sub-12_acq-crosstalk_meg.fif',
+    '/sub-12/acq-calibration_meg.dat',
+    '/sub-12/acq-crosstalk_meg.fif',
+    '/sub-12/acq-calibration.dat',
+    '/sub-12/acq-crosstalk.fif',
+  ]
+
+  badFilenames.forEach(path => {
+    it("isSubjectLevel('" + path + "') === false", function(isdone) {
+      assert.equal(utils.type.file.isSubjectLevel(path), false)
+      isdone()
+    })
+  })
+})
+
 describe('utils.type.file.isSessionLevel', function() {
   const goodFilenames = [
     '/sub-12/sub-12_scans.tsv',
+    '/sub-12/sub-12_scans.json',
     '/sub-12/ses-pre/sub-12_ses-pre_scans.tsv',
+    '/sub-12/ses-pre/sub-12_ses-pre_scans.json',
   ]
 
   goodFilenames.forEach(function(path) {
@@ -132,6 +169,12 @@ describe('utils.type.file.isSessionLevel', function() {
   const badFilenames = [
     '/sub-12/sub-12.tsv',
     '/sub-12/ses-pre/sub-12_ses-pre_scan.tsv',
+    // cross-talk and fine-calibration files for Neuromag/Elekta/MEGIN data (.fif)
+    // must be placed at file level.
+    '/sub-12/sub-12_acq-calibration_meg.dat',
+    '/sub-12/sub-12_acq-crosstalk_meg.fif',
+    '/sub-12/ses-pre/sub-12_ses-pre_acq-calibration_meg.dat',
+    '/sub-12/ses-pre/sub-12_ses-pre_acq-crosstalk_meg.fif',
   ]
 
   badFilenames.forEach(function(path) {
@@ -200,7 +243,13 @@ describe('utils.type.file.isMEG', function() {
     '/sub-control01/ses-001/meg/sub-control01_ses-001_task-rest_run-01_meg.raw',
     '/sub-control01/ses-001/meg/sub-control01_ses-001_task-rest_run-01_meg.raw.mhd',
     // NO father dir: fif data
-    '/sub-01/ses-001/meg/sub-01_ses-001_task-rest_run-01_part-01_meg.fif',
+    '/sub-01/ses-001/meg/sub-01_ses-001_task-rest_run-01_split-01_meg.fif',
+    '/sub-01/ses-001/meg/sub-01_ses-001_task-rest_acq-TEST_run-01_split-01_meg.fif',
+    // cross-talk and fine-calibration files for Neuromag/Elekta/MEGIN data (.fif)
+    '/sub-01/meg/sub-01_acq-calibration_meg.dat',
+    '/sub-01/meg/sub-01_acq-crosstalk_meg.fif',
+    '/sub-01/ses-001/meg/sub-01_ses-001_acq-calibration_meg.dat',
+    '/sub-01/ses-001/meg/sub-01_ses-001_acq-crosstalk_meg.fif',
   ]
 
   goodFilenames.forEach(function(path) {
@@ -214,10 +263,12 @@ describe('utils.type.file.isMEG', function() {
     // missing session directory
     '/sub-01/meg/sub-01_ses-001_task-rest_run-01_meg.json',
     // subject not matching
-    '/sub-01/ses-001/meg/sub-12_ses-001_task-rest_run-01_part-01_meg.fif',
+    '/sub-01/ses-001/meg/sub-12_ses-001_task-rest_run-01_split-01_meg.fif',
     // invalid file endings
     '/sub-01/ses-001/meg/sub-01_ses-001_task-rest_run-01_meg.tsv',
     '/sub-01/ses-001/meg/sub-01_ses-001_task-rest_run-01_meg.bogus',
+    // wrong order of entities: https://github.com/bids-standard/bids-validator/issues/767
+    '/sub-01/ses-001/meg/sub-01_ses-001_task-rest_run-01_acq-TEST_split-01_meg.fif',
     // only parent directory name matters for BTi and CTF systems
     '/sub-01/ses-001/meg/sub-01_ses-001_task-rest_run-01_meggg/config',
     '/sub-01/ses-001/meg/sub-01_ses-001_task-rest_run-01_meg.dd/xyz',
@@ -234,6 +285,11 @@ describe('utils.type.file.isMEG', function() {
     '/sub-01/ses-001/meg/sub-01_ses-001_task-rest_run-01_meg/sub-01_ses-001_task-rest_run-01_meg.kdf',
     '/sub-01/ses-001/meg/sub-01_ses-001_task-rest_run-01_meg/sub-01_ses-001_task-rest_run-01_meg.trg',
     '/sub-01/ses-001/meg/sub-01_ses-001_task-rest_run-01_meg/sub-01_ses-001_task-rest_run-01_meg.chn',
+    // cross-talk and fine-calibration files for Neuromag/Elekta/MEGIN data (.fif)
+    // .dat in MEG only allowed for "acq-calibration"
+    '/acq-notcalibration_meg.dat',
+    '/sub-01/ses-001/meg/sub-01_ses-001_acq-notcalibration_meg.dat',
+    '/sub-01/ses-001/meg/sub-01_ses-001_acq-crosstalk_meg.dat',
   ]
 
   badFilenames.forEach(function(path) {
@@ -248,7 +304,7 @@ describe('utils.type.file.isEEG', function() {
   const goodFilenames = [
     '/sub-01/ses-001/eeg/sub-01_ses-001_task-rest_run-01_eeg.json',
     '/sub-01/ses-001/eeg/sub-01_ses-001_task-rest_run-01_events.tsv',
-    '/sub-01/ses-001/eeg/sub-01_ses-001_task-rest_run-01_part-01_eeg.edf',
+    '/sub-01/ses-001/eeg/sub-01_ses-001_task-rest_run-01_split-01_eeg.edf',
     '/sub-01/ses-001/eeg/sub-01_ses-001_task-rest_run-01_eeg.eeg',
     '/sub-01/ses-001/eeg/sub-01_ses-001_task-rest_run-01_eeg.vmrk',
     '/sub-01/ses-001/eeg/sub-01_ses-001_task-rest_run-01_eeg.vhdr',
@@ -270,7 +326,7 @@ describe('utils.type.file.isEEG', function() {
 
   const badFilenames = [
     '/sub-01/eeg/sub-01_ses-001_task-rest_run-01_eeg.json',
-    '/sub-01/ses-001/eeg/sub-12_ses-001_task-rest_run-01_part-01_eeg.edf',
+    '/sub-01/ses-001/eeg/sub-12_ses-001_task-rest_run-01_split-01_eeg.edf',
     '/sub-01/ses-001/eeg/sub-01_ses-001_task-rest_run-01_eeg.tsv',
   ]
 
@@ -285,14 +341,18 @@ describe('utils.type.file.isEEG', function() {
 describe('utils.type.file.isIEEG', function() {
   const goodFilenames = [
     '/sub-01/ses-001/ieeg/sub-01_ses-001_task-rest_run-01_ieeg.json',
-    '/sub-01/ses-001/ieeg/sub-01_ses-001_task-rest_run-01_part-01_ieeg.edf',
-    '/sub-01/ses-001/ieeg/sub-01_ses-001_task-rest_run-01_part-01_ieeg.vhdr',
-    '/sub-01/ses-001/ieeg/sub-01_ses-001_task-rest_run-01_part-01_ieeg.vmrk',
-    '/sub-01/ses-001/ieeg/sub-01_ses-001_task-rest_run-01_part-01_ieeg.eeg',
-    '/sub-01/ses-001/ieeg/sub-01_ses-001_task-rest_run-01_part-01_ieeg.set',
-    '/sub-01/ses-001/ieeg/sub-01_ses-001_task-rest_run-01_part-01_ieeg.fdt',
-    '/sub-01/ses-001/ieeg/sub-01_ses-001_task-rest_run-01_part-01_ieeg.nwb',
-    '/sub-01/ses-001/ieeg/sub-01_ses-001_task-rest_run-01_part-01_ieeg.mef',
+    '/sub-01/ses-001/ieeg/sub-01_ses-001_task-rest_run-01_split-01_ieeg.edf',
+    '/sub-01/ses-001/ieeg/sub-01_ses-001_task-rest_run-01_split-01_ieeg.vhdr',
+    '/sub-01/ses-001/ieeg/sub-01_ses-001_task-rest_run-01_split-01_ieeg.vmrk',
+    '/sub-01/ses-001/ieeg/sub-01_ses-001_task-rest_run-01_split-01_ieeg.eeg',
+    '/sub-01/ses-001/ieeg/sub-01_ses-001_task-rest_run-01_split-01_ieeg.set',
+    '/sub-01/ses-001/ieeg/sub-01_ses-001_task-rest_run-01_split-01_ieeg.fdt',
+    '/sub-01/ses-001/ieeg/sub-01_ses-001_task-rest_run-01_split-01_ieeg.nwb',
+    '/sub-01/ses-001/ieeg/sub-01_ses-001_task-rest_run-01_split-01_ieeg.mefd/sub-01_ses-001_task-rest_run-01_ieeg.rdat',
+    '/sub-01/ses-001/ieeg/sub-01_ses-001_task-rest_run-01_split-01_ieeg.mefd/sub-01_ses-001_task-rest_run-01_ieeg.ridx',
+    '/sub-01/ses-001/ieeg/sub-01_ses-001_task-rest_run-01_split-01_ieeg.mefd/CH1.timd/CH1-000000.segd/sub-01_ses-001_task-rest_run-01_ieeg.tdat',
+    '/sub-01/ses-001/ieeg/sub-01_ses-001_task-rest_run-01_split-01_ieeg.mefd/CH1.timd/CH1-000000.segd/sub-01_ses-001_task-rest_run-01_ieeg.idx',
+    '/sub-01/ses-001/ieeg/sub-01_ses-001_task-rest_run-01_split-01_ieeg.mefd/CH1.timd/CH1-000000.segd/sub-01_ses-001_task-rest_run-01_ieeg.tmet',
     '/sub-01/ses-001/ieeg/sub-01_ses-001_task-rest_run-01_channels.tsv',
     '/sub-01/ses-001/ieeg/sub-01_ses-001_task-rest_run-01_electrodes.tsv',
   ]
@@ -306,7 +366,7 @@ describe('utils.type.file.isIEEG', function() {
 
   const badFilenames = [
     '/sub-01/ieeg/sub-01_ses-001_task-rest_run-01_ieeg.json',
-    '/sub-01/ses-001/ieeg/sub-12_ses-001_task-rest_run-01_part-01_ieeg.fif',
+    '/sub-01/ses-001/ieeg/sub-12_ses-001_task-rest_run-01_split-01_ieeg.fif',
     '/sub-01/ses-001/ieeg/sub-01_ses-001_task-rest_run-01_ieeg.tsv',
   ]
 

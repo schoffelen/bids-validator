@@ -22,7 +22,8 @@ describe('Events', function() {
       directory: [{ relativePath: '/stimuli/images/blue-square.jpg' }],
     }
     return validate.Events.validateEvents([], stimuli, [], {}).then(issues => {
-      assert(issues.length === 1 && issues[0].code === 77)
+      assert.strictEqual(issues.length, 1)
+      assert.strictEqual(issues[0].code, 77)
     })
   })
 
@@ -32,7 +33,7 @@ describe('Events', function() {
       directory: [{ relativePath: '/stimuli/images/red-square.jpg' }],
     }
     return validate.Events.validateEvents([], stimuli, [], {}).then(issues => {
-      assert(issues.length === 0)
+      assert.deepStrictEqual(issues, [])
     })
   })
 
@@ -55,8 +56,10 @@ describe('Events', function() {
       [],
       headers,
       jsonDictionary,
+      '',
     ).then(issues => {
-      assert(issues.length === 1 && issues[0].code === 85)
+      assert.strictEqual(issues.length, 1)
+      assert.strictEqual(issues[0].code, 85)
     })
   })
 
@@ -79,8 +82,10 @@ describe('Events', function() {
       [],
       headers,
       jsonDictionary,
+      '',
     ).then(issues => {
-      assert(issues.length === 1 && issues[0].code === 86)
+      assert.strictEqual(issues.length, 1)
+      assert.strictEqual(issues[0].code, 86)
     })
   })
 
@@ -103,8 +108,9 @@ describe('Events', function() {
       [],
       headers,
       jsonDictionary,
+      '',
     ).then(issues => {
-      assert.deepEqual(issues, [])
+      assert.deepStrictEqual(issues, [])
     })
   })
 
@@ -120,9 +126,8 @@ describe('Events', function() {
         },
       ]
       const jsonDictionary = {
-        '/sub01/sub01_task-test_bold.json': {
-          RepetitionTime: 1,
-        },
+        '/sub01/sub01_task-test_events.json': {},
+        '/dataset_description.json': { HEDVersion: '7.1.1' },
       }
 
       return validate.Events.validateEvents(
@@ -130,6 +135,7 @@ describe('Events', function() {
         [],
         headers,
         jsonDictionary,
+        '',
       ).then(issues => {
         assert.strictEqual(issues.length, 1)
         assert.strictEqual(issues[0].code, 110)
@@ -147,9 +153,8 @@ describe('Events', function() {
         },
       ]
       const jsonDictionary = {
-        '/sub01/sub01_task-test_bold.json': {
-          RepetitionTime: 1,
-        },
+        '/sub01/sub01_task-test_events.json': {},
+        '/dataset_description.json': { HEDVersion: '7.1.1' },
       }
 
       return validate.Events.validateEvents(
@@ -157,6 +162,7 @@ describe('Events', function() {
         [],
         headers,
         jsonDictionary,
+        '',
       ).then(issues => {
         assert.deepStrictEqual(issues, [])
       })
@@ -173,9 +179,8 @@ describe('Events', function() {
         },
       ]
       const jsonDictionary = {
-        '/sub01/sub01_task-test_bold.json': {
-          RepetitionTime: 1,
-        },
+        '/sub01/sub01_task-test_events.json': {},
+        '/dataset_description.json': { HEDVersion: '7.1.1' },
       }
 
       return validate.Events.validateEvents(
@@ -183,6 +188,7 @@ describe('Events', function() {
         [],
         headers,
         jsonDictionary,
+        '',
       ).then(issues => {
         assert.deepStrictEqual(issues, [])
       })
@@ -200,9 +206,8 @@ describe('Events', function() {
         },
       ]
       const jsonDictionary = {
-        '/sub01/sub01_task-test_bold.json': {
-          RepetitionTime: 1,
-        },
+        '/sub01/sub01_task-test_events.json': {},
+        '/dataset_description.json': { HEDVersion: '7.1.1' },
       }
 
       return validate.Events.validateEvents(
@@ -210,6 +215,7 @@ describe('Events', function() {
         [],
         headers,
         jsonDictionary,
+        '',
       ).then(issues => {
         assert.deepStrictEqual(issues, [])
       })
@@ -226,8 +232,7 @@ describe('Events', function() {
         },
       ]
       const jsonDictionary = {
-        '/sub01/sub01_task-test_bold.json': {
-          RepetitionTime: 1,
+        '/sub01/sub01_task-test_events.json': {
           mycodes: {
             HED: {
               first: 'Event/Category/Miscellaneous/Test',
@@ -235,6 +240,7 @@ describe('Events', function() {
             },
           },
         },
+        '/dataset_description.json': { HEDVersion: '7.1.1' },
       }
 
       return validate.Events.validateEvents(
@@ -242,6 +248,7 @@ describe('Events', function() {
         [],
         headers,
         jsonDictionary,
+        '',
       ).then(issues => {
         assert.strictEqual(issues.length, 1)
         assert.strictEqual(issues[0].code, 110)
@@ -259,8 +266,7 @@ describe('Events', function() {
         },
       ]
       const jsonDictionary = {
-        '/sub01/sub01_task-test_bold.json': {
-          RepetitionTime: 1,
+        '/sub01/sub01_task-test_events.json': {
           mycodes: {
             HED: {
               first: 'Event/Category/Miscellaneous/Test',
@@ -268,6 +274,7 @@ describe('Events', function() {
             },
           },
         },
+        '/dataset_description.json': { HEDVersion: '7.1.1' },
       }
 
       return validate.Events.validateEvents(
@@ -275,6 +282,7 @@ describe('Events', function() {
         [],
         headers,
         jsonDictionary,
+        '',
       ).then(issues => {
         assert.deepStrictEqual(issues, [])
       })
@@ -292,8 +300,7 @@ describe('Events', function() {
         },
       ]
       const jsonDictionary = {
-        '/sub01/sub01_task-test_bold.json': {
-          RepetitionTime: 1,
+        '/sub01/sub01_task-test_events.json': {
           mycodes: {
             HED: {
               first:
@@ -302,6 +309,7 @@ describe('Events', function() {
             },
           },
         },
+        '/dataset_description.json': { HEDVersion: '7.1.1' },
       }
 
       return validate.Events.validateEvents(
@@ -309,6 +317,7 @@ describe('Events', function() {
         [],
         headers,
         jsonDictionary,
+        '',
       ).then(issues => {
         assert.deepStrictEqual(issues, [])
       })
@@ -323,8 +332,7 @@ describe('Events', function() {
         },
       ]
       const jsonDictionary = {
-        '/sub01/sub01_task-test_bold.json': {
-          RepetitionTime: 1,
+        '/sub01/sub01_task-test_events.json': {
           mycodes: {
             HED: {
               first:
@@ -334,6 +342,7 @@ describe('Events', function() {
             },
           },
         },
+        '/dataset_description.json': { HEDVersion: '7.1.1' },
       }
 
       return validate.Events.validateEvents(
@@ -341,6 +350,7 @@ describe('Events', function() {
         [],
         headers,
         jsonDictionary,
+        '',
       ).then(issues => {
         assert.strictEqual(issues.length, 1)
         assert.strictEqual(issues[0].code, 110)
@@ -356,8 +366,7 @@ describe('Events', function() {
         },
       ]
       const jsonDictionary = {
-        '/sub01/sub01_task-test_bold.json': {
-          RepetitionTime: 1,
+        '/sub01/sub01_task-test_events.json': {
           mycodes: {
             HED: {
               first:
@@ -367,6 +376,7 @@ describe('Events', function() {
             },
           },
         },
+        '/dataset_description.json': { HEDVersion: '7.1.1' },
       }
 
       return validate.Events.validateEvents(
@@ -374,6 +384,7 @@ describe('Events', function() {
         [],
         headers,
         jsonDictionary,
+        '',
       ).then(issues => {
         assert.deepStrictEqual(issues, [])
       })
@@ -391,8 +402,7 @@ describe('Events', function() {
         },
       ]
       const jsonDictionary = {
-        '/sub01/sub01_task-test_bold.json': {
-          RepetitionTime: 1,
+        '/sub01/sub01_task-test_events.json': {
           mycodes: {
             HED: {
               first:
@@ -402,6 +412,7 @@ describe('Events', function() {
             },
           },
         },
+        '/dataset_description.json': { HEDVersion: '7.1.1' },
       }
 
       return validate.Events.validateEvents(
@@ -409,6 +420,7 @@ describe('Events', function() {
         [],
         headers,
         jsonDictionary,
+        '',
       ).then(issues => {
         assert.deepStrictEqual(issues, [])
       })
@@ -425,8 +437,7 @@ describe('Events', function() {
         },
       ]
       const jsonDictionary = {
-        '/sub01/sub01_task-test_bold.json': {
-          RepetitionTime: 1,
+        '/sub01/sub01_task-test_events.json': {
           testingCodes: {
             HED: {
               first:
@@ -442,6 +453,7 @@ describe('Events', function() {
             },
           },
         },
+        '/dataset_description.json': { HEDVersion: '7.1.1' },
       }
 
       return validate.Events.validateEvents(
@@ -449,6 +461,7 @@ describe('Events', function() {
         [],
         headers,
         jsonDictionary,
+        '',
       ).then(issues => {
         assert.strictEqual(issues.length, 1)
         assert.strictEqual(issues[0].code, 110)
@@ -466,8 +479,7 @@ describe('Events', function() {
         },
       ]
       const jsonDictionary = {
-        '/sub01/sub01_task-test_bold.json': {
-          RepetitionTime: 1,
+        '/sub01/sub01_task-test_events.json': {
           testingCodes: {
             HED: {
               first:
@@ -483,6 +495,7 @@ describe('Events', function() {
             },
           },
         },
+        '/dataset_description.json': { HEDVersion: '7.1.1' },
       }
 
       return validate.Events.validateEvents(
@@ -490,6 +503,7 @@ describe('Events', function() {
         [],
         headers,
         jsonDictionary,
+        '',
       ).then(issues => {
         assert.deepStrictEqual(issues, [])
       })
@@ -507,8 +521,7 @@ describe('Events', function() {
         },
       ]
       const jsonDictionary = {
-        '/sub01/sub01_task-test_bold.json': {
-          RepetitionTime: 1,
+        '/sub01/sub01_task-test_events.json': {
           testingCodes: {
             HED: {
               first:
@@ -524,6 +537,7 @@ describe('Events', function() {
             },
           },
         },
+        '/dataset_description.json': { HEDVersion: '7.1.1' },
       }
 
       return validate.Events.validateEvents(
@@ -531,6 +545,7 @@ describe('Events', function() {
         [],
         headers,
         jsonDictionary,
+        '',
       ).then(issues => {
         assert.deepStrictEqual(issues, [])
       })
@@ -545,8 +560,7 @@ describe('Events', function() {
         },
       ]
       const jsonDictionary = {
-        '/sub01/sub01_task-test_bold.json': {
-          RepetitionTime: 1,
+        '/sub01/sub01_task-test_events.json': {
           mycodes: {
             HED: {
               first: 'Event/Category/Experimental stimulus',
@@ -554,6 +568,7 @@ describe('Events', function() {
             },
           },
         },
+        '/dataset_description.json': { HEDVersion: '7.1.1' },
       }
 
       return validate.Events.validateEvents(
@@ -561,6 +576,7 @@ describe('Events', function() {
         [],
         headers,
         jsonDictionary,
+        '',
       ).then(issues => {
         assert.strictEqual(issues.length, 1)
         assert.strictEqual(issues[0].code, 112)
@@ -578,9 +594,8 @@ describe('Events', function() {
         },
       ]
       const jsonDictionary = {
-        '/sub01/sub01_task-test_bold.json': {
-          RepetitionTime: 1,
-        },
+        '/sub01/sub01_task-test_events.json': {},
+        '/dataset_description.json': { HEDVersion: '7.1.1' },
       }
 
       return validate.Events.validateEvents(
@@ -588,6 +603,7 @@ describe('Events', function() {
         [],
         headers,
         jsonDictionary,
+        '',
       ).then(issues => {
         assert.strictEqual(issues.length, 1)
         assert.strictEqual(issues[0].code, 106)
@@ -605,9 +621,8 @@ describe('Events', function() {
         },
       ]
       const jsonDictionary = {
-        '/sub01/sub01_task-test_bold.json': {
-          RepetitionTime: 1,
-        },
+        '/sub01/sub01_task-test_events.json': {},
+        '/dataset_description.json': { HEDVersion: '7.1.1' },
       }
 
       return validate.Events.validateEvents(
@@ -615,6 +630,7 @@ describe('Events', function() {
         [],
         headers,
         jsonDictionary,
+        '',
       ).then(issues => {
         assert.strictEqual(issues.length, 1)
         assert.strictEqual(issues[0].code, 107)
@@ -632,9 +648,8 @@ describe('Events', function() {
         },
       ]
       const jsonDictionary = {
-        '/sub01/sub01_task-test_bold.json': {
-          RepetitionTime: 1,
-        },
+        '/sub01/sub01_task-test_events.json': {},
+        '/dataset_description.json': { HEDVersion: '7.1.1' },
       }
 
       return validate.Events.validateEvents(
@@ -642,6 +657,7 @@ describe('Events', function() {
         [],
         headers,
         jsonDictionary,
+        '',
       ).then(issues => {
         assert.strictEqual(issues.length, 1)
         assert.strictEqual(issues[0].code, 108)
@@ -659,9 +675,8 @@ describe('Events', function() {
         },
       ]
       const jsonDictionary = {
-        '/sub01/sub01_task-test_bold.json': {
-          RepetitionTime: 1,
-        },
+        '/sub01/sub01_task-test_events.json': {},
+        '/dataset_description.json': { HEDVersion: '7.1.1' },
       }
 
       return validate.Events.validateEvents(
@@ -669,6 +684,7 @@ describe('Events', function() {
         [],
         headers,
         jsonDictionary,
+        '',
       ).then(issues => {
         assert.strictEqual(issues.length, 1)
         assert.strictEqual(issues[0].code, 109)
@@ -686,9 +702,8 @@ describe('Events', function() {
         },
       ]
       const jsonDictionary = {
-        '/sub01/sub01_task-test_bold.json': {
-          RepetitionTime: 1,
-        },
+        '/sub01/sub01_task-test_events.json': {},
+        '/dataset_description.json': { HEDVersion: '7.1.1' },
       }
 
       return validate.Events.validateEvents(
@@ -696,6 +711,7 @@ describe('Events', function() {
         [],
         headers,
         jsonDictionary,
+        '',
       ).then(issues => {
         assert.strictEqual(issues.length, 1)
         assert.strictEqual(issues[0].code, 111)
@@ -713,9 +729,8 @@ describe('Events', function() {
         },
       ]
       const jsonDictionary = {
-        '/sub01/sub01_task-test_bold.json': {
-          RepetitionTime: 1,
-        },
+        '/sub01/sub01_task-test_events.json': {},
+        '/dataset_description.json': { HEDVersion: '7.1.1' },
       }
 
       return validate.Events.validateEvents(
@@ -723,6 +738,7 @@ describe('Events', function() {
         [],
         headers,
         jsonDictionary,
+        '',
       ).then(issues => {
         assert.strictEqual(issues.length, 1)
         assert.strictEqual(issues[0].code, 115)
@@ -740,9 +756,8 @@ describe('Events', function() {
         },
       ]
       const jsonDictionary = {
-        '/sub01/sub01_task-test_bold.json': {
-          RepetitionTime: 1,
-        },
+        '/sub01/sub01_task-test_events.json': {},
+        '/dataset_description.json': { HEDVersion: '7.1.1' },
       }
 
       return validate.Events.validateEvents(
@@ -750,6 +765,7 @@ describe('Events', function() {
         [],
         headers,
         jsonDictionary,
+        '',
       ).then(issues => {
         assert.strictEqual(issues.length, 1)
         assert.strictEqual(issues[0].code, 116)
@@ -767,9 +783,8 @@ describe('Events', function() {
         },
       ]
       const jsonDictionary = {
-        '/sub01/sub01_task-test_bold.json': {
-          RepetitionTime: 1,
-        },
+        '/sub01/sub01_task-test_events.json': {},
+        '/dataset_description.json': { HEDVersion: '7.1.1' },
       }
 
       return validate.Events.validateEvents(
@@ -777,6 +792,7 @@ describe('Events', function() {
         [],
         headers,
         jsonDictionary,
+        '',
       ).then(issues => {
         assert.strictEqual(issues.length, 1)
         assert.strictEqual(issues[0].code, 117)
@@ -794,9 +810,8 @@ describe('Events', function() {
         },
       ]
       const jsonDictionary = {
-        '/sub01/sub01_task-test_bold.json': {
-          RepetitionTime: 1,
-        },
+        '/sub01/sub01_task-test_events.json': {},
+        '/dataset_description.json': { HEDVersion: '7.1.1' },
       }
 
       return validate.Events.validateEvents(
@@ -804,6 +819,7 @@ describe('Events', function() {
         [],
         headers,
         jsonDictionary,
+        '',
       ).then(issues => {
         assert.strictEqual(issues.length, 1)
         assert.strictEqual(issues[0].code, 118)
@@ -821,9 +837,8 @@ describe('Events', function() {
         },
       ]
       const jsonDictionary = {
-        '/sub01/sub01_task-test_bold.json': {
-          RepetitionTime: 1,
-        },
+        '/sub01/sub01_task-test_events.json': {},
+        '/dataset_description.json': { HEDVersion: '7.1.1' },
       }
 
       return validate.Events.validateEvents(
@@ -831,6 +846,7 @@ describe('Events', function() {
         [],
         headers,
         jsonDictionary,
+        '',
       ).then(issues => {
         assert.strictEqual(issues.length, 1)
         assert.strictEqual(issues[0].code, 119)
@@ -848,9 +864,8 @@ describe('Events', function() {
         },
       ]
       const jsonDictionary = {
-        '/sub01/sub01_task-test_bold.json': {
-          RepetitionTime: 1,
-        },
+        '/sub01/sub01_task-test_events.json': {},
+        '/dataset_description.json': { HEDVersion: '7.1.1' },
       }
 
       return validate.Events.validateEvents(
@@ -858,6 +873,7 @@ describe('Events', function() {
         [],
         headers,
         jsonDictionary,
+        '',
       ).then(issues => {
         assert.strictEqual(issues.length, 1)
         assert.strictEqual(issues[0].code, 120)
@@ -875,9 +891,8 @@ describe('Events', function() {
         },
       ]
       const jsonDictionary = {
-        '/sub01/sub01_task-test_bold.json': {
-          RepetitionTime: 1,
-        },
+        '/sub01/sub01_task-test_events.json': {},
+        '/dataset_description.json': { HEDVersion: '7.1.1' },
       }
 
       return validate.Events.validateEvents(
@@ -885,6 +900,7 @@ describe('Events', function() {
         [],
         headers,
         jsonDictionary,
+        '',
       ).then(issues => {
         assert.strictEqual(issues.length, 1)
         assert.strictEqual(issues[0].code, 121)
@@ -902,9 +918,8 @@ describe('Events', function() {
         },
       ]
       const jsonDictionary = {
-        '/sub01/sub01_task-test_bold.json': {
-          RepetitionTime: 1,
-        },
+        '/sub01/sub01_task-test_events.json': {},
+        '/dataset_description.json': { HEDVersion: '7.1.1' },
       }
 
       return validate.Events.validateEvents(
@@ -912,9 +927,36 @@ describe('Events', function() {
         [],
         headers,
         jsonDictionary,
+        '',
       ).then(issues => {
         assert.strictEqual(issues.length, 1)
         assert.strictEqual(issues[0].code, 122)
+      })
+    })
+
+    it('should not throw an issue if the HED string is valid in a previous remote schema version', () => {
+      const events = [
+        {
+          file: { path: '/sub01/sub01_task-test_events.tsv' },
+          path: '/sub01/sub01_task-test_events.tsv',
+          contents:
+            'onset\tduration\tHED\n' +
+            '7\tsomething\tEvent/Label/Test,Event/Category/Miscellaneous/Test,Event/Description/Test,Event/Duration/3 ms\n',
+        },
+      ]
+      const jsonDictionary = {
+        '/sub01/sub01_task-test_events.json': {},
+        '/dataset_description.json': { HEDVersion: '7.0.5' },
+      }
+
+      return validate.Events.validateEvents(
+        events,
+        [],
+        headers,
+        jsonDictionary,
+        '',
+      ).then(issues => {
+        assert.deepStrictEqual(issues, [])
       })
     })
   })

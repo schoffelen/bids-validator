@@ -1,11 +1,35 @@
 version: 2
 
 jobs:
+  test_python:
+    docker:
+      - image: continuumio/miniconda3
+    environment:
+      BASH_ENV: "/root/.bashrc"
+    steps:
+      - checkout
+      - run:
+          name: setup conda
+          command: |
+            conda create -n testenv Python=3.7
+            conda init
+      - run:
+          name: install datalad
+          command: |
+            conda activate testenv
+            conda install -c conda-forge git-annex
+            pip install pytest flake8 pydocstyle datalad
+      - run:
+          name: test python
+          command: |
+            conda activate testenv
+            pytest --doctest-modules bids-validator/bids_validator
+            flake8 bids-validator/bids_validator
+            pydocstyle bids-validator/bids_validator/bids_validator.py
   test:
     docker:
-      - image: node:12.14.1-alpine
+      - image: node:12.16.1
     steps:
-      - run: apk --no-cache add ca-certificates git openssh-client
       - checkout
       - restore_cache:
           keys:
@@ -19,7 +43,7 @@ jobs:
           command: yarn lint
       - run:
           name: Test Data
-          command: git submodule update --init --depth 1
+          command: git submodule update --init
       - run:
           name: Jest tests
           command: yarn coverage --maxWorkers=2
@@ -99,7 +123,7 @@ jobs:
       - run: apk --no-cache add ca-certificates git openssh-client
       - add_ssh_keys:
           fingerprints:
-            - '44:93:5a:f4:2b:2d:c1:8a:f2:8e:8b:e9:27:5f:93:25'
+            - '86:74:77:4c:90:02:f4:5d:b4:f8:3c:b4:37:c3:c0:25'
       - checkout
       - run: apk --no-cache add python build-base openssh libffi-dev libressl-dev
       - run:
@@ -112,8 +136,8 @@ jobs:
       # Publish to PyPI
       - run: cd bids-validator && twine upload dist/*
       # Update gh-pages demo site
-      - run: git config --global user.email circleci@circleci
-      - run: git config --global user.name CircleCI
+      - run: git config --global user.email "bids.maintenance@gmail.com"
+      - run: git config --global user.name "bids-maintenance"
       - run: ssh-keyscan github.com >> ~/.ssh/known_hosts
       - run:
           name: Create new gh-pages branch without history
@@ -139,13 +163,19 @@ jobs:
       - run: git status
       - run:
           name: Commit updates
-          command: git add . && git commit --allow-empty --no-verify -m 'Circle CI - Generate validator demo with version $CIRCLE_TAG'
+          command: git add . && git commit --allow-empty --no-verify -m "Circle CI - Generate validator demo with version $CIRCLE_TAG"
       - run: git push origin gh-pages -f
 
 workflows:
   version: 2
   build-deploy:
     jobs:
+      - test_python:
+          filters:
+            branches:
+              only: /.*/
+            tags:
+              only: /.*/
       - test:
           filters:
             branches:
@@ -170,6 +200,7 @@ workflows:
               only: /.*/
       - deployment:
           requires:
+            - test_python
             - test
             - test_docker
             - githubPagesTest
