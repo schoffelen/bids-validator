@@ -8,12 +8,6 @@ const JSONFilePattern = /.json$/
 const isJSONFile = file =>
   JSONFilePattern.test(isNode ? file.name : file.relativePath)
 
-// Work around JSDom not providing TextDecoder yet
-if (typeof TextDecoder === 'undefined') {
-  const { TextDecoder } = require('util')
-  global.TextDecoder = TextDecoder
-}
-
 /**
  * checkEncoding
  * @param {object | File} file - nodeJS fs file or browser File
@@ -39,28 +33,29 @@ const checkEncoding = (file, data, cb) => {
 function readFile(file, annexed, dir) {
   return new Promise((resolve, reject) => {
     if (isNode) {
-      testFile(file, annexed, dir, function (issue, stats, remoteBuffer) {
+      testFile(file, annexed, dir, function(issue, stats, remoteBuffer) {
         if (issue) {
           return reject(issue)
         }
         if (!remoteBuffer) {
-          fs.readFile(file.path, function (err, data) {
-            if (err) {
-              return reject(err)
-            }
-            checkEncoding(file, data, ({ isUtf8 }) => {
-              if (!isUtf8) reject(new Issue({ code: 123, file }))
+          fs.readFile(file.path, function(err, data) {
+            process.nextTick(function() {
+              checkEncoding(file, data, ({ isUtf8 }) => {
+                if (!isUtf8) reject(new Issue({ code: 123, file }))
+              })
+              return resolve(data.toString('utf8'))
             })
-            return resolve(data.toString('utf8'))
           })
         }
         if (remoteBuffer) {
-          return resolve(remoteBuffer.toString('utf8'))
+          process.nextTick(function() {
+            return resolve(remoteBuffer.toString('utf8'))
+          })
         }
       })
     } else {
       const reader = new FileReader()
-      reader.onloadend = e => {
+      reader.onloadend = function(e) {
         if (e.target.readyState == FileReader.DONE) {
           if (!e.target.result) {
             return reject(new Issue({ code: 44, file: file }))
@@ -69,7 +64,8 @@ function readFile(file, annexed, dir) {
           checkEncoding(file, buffer, ({ isUtf8 }) => {
             if (!isUtf8) reject(new Issue({ code: 123, file }))
           })
-          return resolve(new TextDecoder().decode(buffer))
+          const utf8Data = String.fromCharCode.apply(null, buffer)
+          return resolve(utf8Data)
         }
       }
       reader.readAsArrayBuffer(file)

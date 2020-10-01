@@ -102,9 +102,9 @@ describe('BIDS example datasets ', function() {
       assert(summary.modalities.includes('T1w'))
       assert(summary.modalities.includes('inplaneT2'))
       assert(summary.modalities.includes('bold'))
-      assert(summary.totalFiles === 134)
+      assert(summary.totalFiles === 133)
       assert.deepEqual(errors.length, 1)
-      assert(warnings.length === 2)
+      assert(warnings.length === 3)
       assert(
         warnings.findIndex(warning => warning.code === 13) > -1,
         'warnings do not contain a code 13',
@@ -128,12 +128,12 @@ describe('BIDS example datasets ', function() {
       assert.isFalse(summary.dataProcessed)
       assert(summary.modalities.includes('T1w'))
       assert(summary.modalities.includes('bold'))
-      expect(summary.totalFiles).toEqual(8)
+      assert(summary.totalFiles === 8)
       assert(
         errors.findIndex(error => error.code === 60) > -1,
         'errors do not contain a code 60',
       )
-      assert.deepEqual(warnings.length, 4)
+      assert.deepEqual(warnings.length, 3)
       assert(
         warnings.findIndex(warning => warning.code === 13) > -1,
         'warnings do not contain a code 13',
@@ -205,9 +205,9 @@ describe('BIDS example datasets ', function() {
       assert(summary.modalities.includes('T1w'))
       assert(summary.modalities.includes('inplaneT2'))
       assert(summary.modalities.includes('bold'))
-      assert(summary.totalFiles === 134)
+      assert(summary.totalFiles === 133)
       assert.deepEqual(errors.length, 1)
-      assert(warnings.length === 2)
+      assert(warnings.length === 3)
       assert(
         warnings.findIndex(warning => warning.code === 13) > -1,
         'warnings do not contain a code 13',

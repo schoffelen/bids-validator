@@ -1,25 +1,9 @@
 import utils from '../../utils'
-import Issue from '../../utils/issues/issue'
+const Issue = utils.issues.Issue
 import checkAcqTimeFormat from './checkAcqTimeFormat'
 import checkAge89 from './checkAge89'
 import checkStatusCol from './checkStatusCol'
-import checkTypecol from './checkTypeCol'
 import parseTSV from './tsvParser'
-var path = require('path')
-
-/**
- * Format TSV headers for evidence string
- * @param {Array[string]} headers
- * @returns {string}
- */
-const headersEvidence = headers => `Column headers: ${headers.join(', ')}`
-
-/**
- * Format TSV filename for evidence string
- * @param {Array[string]} filename
- * @returns {string}
- */
-const filenameEvidence = filename => `Filename: ${filename}`
 
 /**
  * TSV
@@ -114,7 +98,7 @@ const TSV = (file, contents, fileList, callback) => {
       issues.push(
         new Issue({
           file: file,
-          evidence: headersEvidence(headers),
+          evidence: headers,
           line: 1,
           character: rows[0].indexOf(headers[idx]),
           code: code,
@@ -129,17 +113,17 @@ const TSV = (file, contents, fileList, callback) => {
       issues.push(
         new Issue({
           file: file,
-          evidence: headersEvidence(headers),
+          evidence: headers,
           line: 1,
           code: 20,
         }),
       )
     }
-    if (headers.length < 2 || headers[1].trim() !== 'duration') {
+    if (headers.length == 1 || headers[1].trim() !== 'duration') {
       issues.push(
         new Issue({
           file: file,
-          evidence: headersEvidence(headers),
+          evidence: headers,
           line: 1,
           code: 21,
         }),
@@ -197,7 +181,7 @@ const TSV = (file, contents, fileList, callback) => {
       issues.push(
         new Issue({
           file: file,
-          evidence: headersEvidence(headers),
+          evidence: headers.join('\t'),
           line: 1,
           code: 48,
         }),
@@ -227,7 +211,6 @@ const TSV = (file, contents, fileList, callback) => {
     checkheader('type', 1, file, 71)
     checkheader('units', 2, file, 71)
     checkStatusCol(rows, file, issues)
-    checkTypecol(rows, file, issues)
   }
 
   if (
@@ -238,7 +221,6 @@ const TSV = (file, contents, fileList, callback) => {
     checkheader('type', 1, file, 71)
     checkheader('units', 2, file, 71)
     checkStatusCol(rows, file, issues)
-    checkTypecol(rows, file, issues)
   }
 
   if (
@@ -251,7 +233,6 @@ const TSV = (file, contents, fileList, callback) => {
     checkheader('low_cutoff', 3, file, 72)
     checkheader('high_cutoff', 4, file, 72)
     checkStatusCol(rows, file, issues)
-    checkTypecol(rows, file, issues)
   }
 
   // electrodes.tsv
@@ -277,9 +258,6 @@ const TSV = (file, contents, fileList, callback) => {
   }
 
   // check for valid SI units
-  /* 
-   * Commenting out call to validation until it is inline with spec:
-   * https://github.com/bids-standard/bids-specification/pull/411
   if (headers.includes('units')) {
     const unitIndex = headers.indexOf('units')
     rows
@@ -303,74 +281,29 @@ const TSV = (file, contents, fileList, callback) => {
           )
       })
   }
-  */
+
+  if (file.name.endsWith('_pet-blood.tsv')) {
+    // Validate fields here
+    checkheader('Time', 0, file, 126)
+    checkheader('PlasmaActivity', 1, file, 126)
+  }
 
   // check partcipants.tsv for age 89+
-
   if (file.name === 'participants.tsv') {
     checkAge89(rows, file, issues)
   }
 
   if (file.name.endsWith('_scans.tsv')) {
-    // get the directory path for the scans.tsv
-    const scanDirPath = path.dirname(file.relativePath)
-
-    // get the subject and session for this scans.tsv file
-    const subject = file.name.split('_').slice(0, 1)
-
-    // get the relative subject path
-    const subRelativePath = '/' + subject
-
-    // get list of file paths for this subject and session
-    const pathList = []
-    for (let file of Object.values(fileList)) {
-      const fPath = file.relativePath
-
-      // XXX: needs to be improved, since this currently allows arbitrary directory nesting
-      // dataset file needs to be within the subject
-      // and session directory
-      if (fPath.startsWith(subRelativePath)) {
-        if (fPath.includes('.ds/') || fPath.includes('_meg/')) {
-          // CTF or BTI data
-          const fDir = path.dirname(fPath)
-          pathList.push(fDir)
-        } else {
-          // all other data kinds
-          pathList.push(fPath)
-        }
-      }
-    }
-
     // check _scans.tsv for column filename
     if (!(headers.indexOf('filename') > -1)) {
       issues.push(
         new Issue({
           line: 1,
           file: file,
-          evidence: headersEvidence(headers),
+          evidence: headers.join('\t'),
           code: 68,
         }),
       )
-    } else {
-      // check scans filenames match pathList
-      const filenameColumn = headers.indexOf('filename')
-      for (let l = 1; l < rows.length; l++) {
-        const row = rows[l]
-        const scanRelativePath = row[filenameColumn]
-        const scanFullPath = scanDirPath + '/' + scanRelativePath
-
-        // check if scan matches full dataset path list
-        if (!pathList.includes(scanFullPath)) {
-          issues.push(
-            new Issue({
-              line: l,
-              file: file,
-              code: 129,
-              evidence: filenameEvidence(scanFullPath),
-            }),
-          )
-        }
-      }
     }
 
     // if _scans.tsv has the acq_time header, check datetime format
@@ -378,6 +311,7 @@ const TSV = (file, contents, fileList, callback) => {
       checkAcqTimeFormat(rows, file, issues)
     }
   }
+
   callback(issues, participants, stimPaths)
 }
 

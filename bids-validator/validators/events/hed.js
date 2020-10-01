@@ -1,112 +1,105 @@
 import hedValidator from 'hed-validator'
-import path from 'path'
-import semver from 'semver'
 import utils from '../../utils'
 const Issue = utils.issues.Issue
 
-export default function checkHedStrings(events, headers, jsonContents, dir) {
+export default function checkHedStrings(events, headers, jsonContents) {
   let issues = []
+  // get all headers associated with task data
+  const taskHeaders = headers.filter(header => {
+    const file = header[0]
+    return file.relativePath.includes('_task-')
+  })
 
   const hedStrings = []
 
-  // loop through event data files
-  events.forEach(eventFile => {
-    // get the json sidecar dictionary associated with the event data
+  // loop through headers with files that are tasks
+  taskHeaders.forEach(taskHeader => {
+    const file = taskHeader[0]
+
+    // get the json sidecar dictionary associated with that nifti scan
     const potentialSidecars = utils.files.potentialLocations(
-      eventFile.path.replace('.tsv', '.json'),
+      file.relativePath.replace('.gz', '').replace('.nii', '.json'),
     )
     const mergedDictionary = utils.files.generateMergedSidecarDict(
       potentialSidecars,
       jsonContents,
     )
-
     const sidecarHedTags = {}
+
     for (const sidecarKey in mergedDictionary) {
       const sidecarValue = mergedDictionary[sidecarKey]
-      if (
-        sidecarValue !== null &&
-        typeof sidecarValue === 'object' &&
-        sidecarValue.HED !== undefined
-      ) {
+      if (sidecarValue.HED !== undefined) {
         sidecarHedTags[sidecarKey] = sidecarValue.HED
       }
     }
 
-    // get all non-empty rows
-    const rows = eventFile.contents
-      .split('\n')
-      .filter(row => !(!row || /^\s*$/.test(row)))
+    // get the _events.tsv associated with this task scan
+    const potentialEvents = utils.files.potentialLocations(
+      file.relativePath.replace('.gz', '').replace('bold.nii', 'events.tsv'),
+    )
+    const associatedEvents = events.filter(
+      event => potentialEvents.indexOf(event.path) > -1,
+    )
 
-    const columnHeaders = rows[0].trim().split('\t')
-    const hedColumnIndex = columnHeaders.indexOf('HED')
-    const sidecarHedColumnIndices = {}
-    for (const sidecarHedColumn in sidecarHedTags) {
-      const sidecarHedColumnHeader = columnHeaders.indexOf(sidecarHedColumn)
-      if (sidecarHedColumnHeader > -1) {
-        sidecarHedColumnIndices[sidecarHedColumn] = sidecarHedColumnHeader
-      }
-    }
-    if (hedColumnIndex === -1 && sidecarHedColumnIndices.length === 0) {
-      return
-    }
+    // loop through all events associated with this task scan
+    for (const event of associatedEvents) {
+      // get all non-empty rows
+      const rows = event.contents
+        .split('\n')
+        .filter(row => !(!row || /^\s*$/.test(row)))
 
-    for (const row of rows.slice(1)) {
-      // get the 'HED' field
-      const rowCells = row.trim().split('\t')
-      const hedStringParts = []
-      if (rowCells[hedColumnIndex]) {
-        hedStringParts.push(rowCells[hedColumnIndex])
-      }
-      for (const sidecarHedColumn in sidecarHedColumnIndices) {
-        const sidecarHedIndex = sidecarHedColumnIndices[sidecarHedColumn]
-        const sidecarHedKey = rowCells[sidecarHedIndex]
-        if (sidecarHedKey) {
-          const sidecarHedString =
-            sidecarHedTags[sidecarHedColumn][sidecarHedKey]
-          if (sidecarHedString !== undefined) {
-            hedStringParts.push(sidecarHedString)
-          } else {
-            issues.push(
-              new Issue({
-                code: 112,
-                file: eventFile.file,
-                evidence: sidecarHedKey,
-              }),
-            )
-          }
+      const columnHeaders = rows[0].trim().split('\t')
+      const hedColumnIndex = columnHeaders.indexOf('HED')
+      const sidecarHedColumnIndices = {}
+      for (const sidecarHedColumn in sidecarHedTags) {
+        const sidecarHedColumnHeader = columnHeaders.indexOf(sidecarHedColumn)
+        if (sidecarHedColumnHeader > -1) {
+          sidecarHedColumnIndices[sidecarHedColumn] = sidecarHedColumnHeader
         }
       }
-
-      if (hedStringParts.length === 0) {
+      if (hedColumnIndex === -1 && sidecarHedColumnIndices.length === 0) {
         continue
       }
-      hedStrings.push([eventFile.file, hedStringParts.join(',')])
+
+      for (const row of rows.slice(1)) {
+        // get the 'HED' field
+        const rowCells = row.trim().split('\t')
+        const hedStringParts = []
+        if (rowCells[hedColumnIndex]) {
+          hedStringParts.push(rowCells[hedColumnIndex])
+        }
+        for (const sidecarHedColumn in sidecarHedColumnIndices) {
+          const sidecarHedIndex = sidecarHedColumnIndices[sidecarHedColumn]
+          const sidecarHedKey = rowCells[sidecarHedIndex]
+          if (sidecarHedKey) {
+            const sidecarHedString =
+              sidecarHedTags[sidecarHedColumn][sidecarHedKey]
+            if (sidecarHedString !== undefined) {
+              hedStringParts.push(sidecarHedString)
+            } else {
+              issues.push(
+                new Issue({
+                  code: 112,
+                  file: file,
+                  evidence: sidecarHedKey,
+                }),
+              )
+            }
+          }
+        }
+
+        if (hedStringParts.length === 0) {
+          continue
+        }
+        hedStrings.push([file, hedStringParts.join(',')])
+      }
     }
   })
 
   if (hedStrings.length === 0) {
     return Promise.resolve(issues)
   } else {
-    // find specified version in sidecar
-    const schemaDefinition = {}
-    const datasetDescription = jsonContents['/dataset_description.json']
-
-    if (datasetDescription && datasetDescription.HEDVersion) {
-      if (semver.valid(datasetDescription.HEDVersion)) {
-        schemaDefinition.version = datasetDescription.HEDVersion
-      } else {
-        schemaDefinition.path = path.join(
-          path.resolve(dir),
-          'sourcedata',
-          datasetDescription.HEDVersion,
-        )
-      }
-    } else {
-      issues.push(new Issue({ code: 132 }))
-    }
-
-    // run HED validator
-    return hedValidator.buildSchema(schemaDefinition).then(hedSchema => {
+    return hedValidator.buildSchema().then(hedSchema => {
       for (const [file, hedString] of hedStrings) {
         const [isHedStringValid, hedIssues] = hedValidator.validateHedString(
           hedString,
