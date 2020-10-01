@@ -181,7 +181,7 @@ const fullTest = (fileList, options, annexed, dir, callback) => {
         stimuli,
         headers,
         jsonContentsDict,
-        dir,
+        self.issues,
       )
     })
     .then(eventsIssues => {
@@ -189,10 +189,8 @@ const fullTest = (fileList, options, annexed, dir, callback) => {
 
       // Validate custom fields in all TSVs and add any issues to the list
       self.issues = self.issues.concat(
-        tsv.validateTsvColumns(tsvs, jsonContentsDict)
+        tsv.validateTsvColumns(tsvs, jsonContentsDict),
       )
-      // Validate continous recording files
-      self.issues = self.issues.concat(tsv.validateContRec(files.contRecord, jsonContentsDict))
 
       // Validate session files
       self.issues = self.issues.concat(session(fileList))

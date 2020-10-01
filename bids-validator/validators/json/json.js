@@ -109,15 +109,6 @@ const selectSchema = file => {
       schema = require('./schemas/coordsystem_eeg.json')
     } else if (file.name.endsWith('pet.json')) {
       schema = require('./schemas/pet.json')
-    } else if (
-        file.name.endsWith('genetic_info.json')
-    ) {
-      schema = require('./schemas/genetic_info.json')
-    } else if (
-        file.name.endsWith('physio.json') ||
-        file.name.endsWith('stim.json')
-    ) {
-      schema = require('./schemas/physio.json')
     }
      else if (
        file.relativePath.includes('/pet/') &&

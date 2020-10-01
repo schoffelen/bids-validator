@@ -9,7 +9,6 @@ const groupFileTypes = (fileList, options) => {
     tsv: [],
     bval: [],
     bvec: [],
-    contRecord: [],
     invalid: [],
     // used to check all files not already passed through testFile()
     misc: [],
@@ -50,8 +49,6 @@ const sortFiles = (fileList, options, files) => {
       // collect ephys
       files.ephys.push(file)
       files.misc.push(file)
-    } else if (ofType(filename, 'tsv.gz')) {
-      files.contRecord.push(file)
     } else {
       files.misc.push(file)
     }
@@ -68,13 +65,7 @@ const ephysTest = filename => {
     'set',
     'fdt',
     'nwb',
-    'rdat',
-    'ridx',
-    'tdat',
-    'tidx',
-    'tmet',
-    'vidx',
-    'vmet',
+    'mef',
   ].includes(filename.split('.').pop())
 }
 

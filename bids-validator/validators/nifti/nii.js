@@ -265,8 +265,8 @@ export default function NIFTI(
             }),
           )
         } else {
-          const niftiTR = Number(repetitionTime).toFixed(3)
-          const jsonTR = Number(mergedDictionary.RepetitionTime).toFixed(3)
+          const niftiTR = Number(repetitionTime.toFixed(3))
+          const jsonTR = Number(mergedDictionary.RepetitionTime.toFixed(3))
           if (niftiTR !== jsonTR) {
             issues.push(
               new Issue({
@@ -336,7 +336,7 @@ export default function NIFTI(
             new Issue({
               file: file,
               code: 66,
-              evidence: valuesGreaterThanRepetitionTime.join(', '),
+              evidence: valuesGreaterThanRepetitionTime,
             }),
           )
         }

@@ -12,6 +12,7 @@
 import associated_data_rules from '../bids_validator/rules/associated_data_rules.json'
 
 import file_level_rules from '../bids_validator/rules/file_level_rules.json'
+import fixed_top_level_names from '../bids_validator/rules/fixed_top_level_names.json'
 import phenotypic_rules from '../bids_validator/rules/phenotypic_rules.json'
 import session_level_rules from '../bids_validator/rules/session_level_rules.json'
 import subject_level_rules from '../bids_validator/rules/subject_level_rules.json'
@@ -34,8 +35,6 @@ const funcData = buildRegExp(file_level_rules.func)
 const funcBoldData = buildRegExp(file_level_rules.func_bold)
 const ieegData = buildRegExp(file_level_rules.ieeg)
 const megData = buildRegExp(file_level_rules.meg)
-const megCalibrationData = buildRegExp(file_level_rules.meg_calbibration)
-const megCrosstalkData = buildRegExp(file_level_rules.meg_crosstalk)
 const stimuliData = buildRegExp(file_level_rules.stimuli)
 const petData = buildRegExp(file_level_rules.pet)
 const petBloodData = buildRegExp(file_level_rules.pet_blood)
@@ -52,7 +51,7 @@ const scansSes = buildRegExp(session_level_rules.scans)
 // Subject level
 const subjectLevel = buildRegExp(subject_level_rules.subject_level)
 // Top level
-const rootTop = buildRegExp(top_level_rules.root_top)
+const fixedTopLevelNames = fixed_top_level_names.fixed_top_level_names
 const funcTop = buildRegExp(top_level_rules.func_top)
 const anatTop = buildRegExp(top_level_rules.anat_top)
 const dwiTop = buildRegExp(top_level_rules.dwi_top)
@@ -82,6 +81,7 @@ export default {
       this.file.isIEEG(path) ||
       this.file.isEEG(path) ||
       this.file.isBehavioral(path) ||
+      this.file.isCont(path) ||
       this.file.isFieldMap(path) ||
       this.file.isPhenotypic(path) ||
       this.file.isPET(path) ||
@@ -98,7 +98,7 @@ export default {
      */
     isTopLevel: function(path) {
       return (
-        rootTop.test(path) ||
+        fixedTopLevelNames.indexOf(path) != -1 ||
         funcTop.test(path) ||
         dwiTop.test(path) ||
         anatTop.test(path) ||
@@ -131,10 +131,6 @@ export default {
 
     isTSV: function(path) {
       return path.endsWith('.tsv')
-    },
-
-    isContinousRecording: function(path) {
-      return path.endsWith('.tsv.gz')
     },
 
     isStimuliData: function(path) {
@@ -205,11 +201,7 @@ export default {
     },
 
     isMeg: function(path) {
-      return (
-        conditionalMatch(megData, path) ||
-        conditionalMatch(megCalibrationData, path) ||
-        conditionalMatch(megCrosstalkData, path)
-      )
+      return conditionalMatch(megData, path)
     },
 
     isEEG: function(path) {
