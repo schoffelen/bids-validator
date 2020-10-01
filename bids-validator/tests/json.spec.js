@@ -84,7 +84,7 @@ describe('JSON', function() {
       SoftwareFilters: {
         HighPass: { HalfAmplitudeCutOffHz: 1, RollOff: '6dB/Octave' },
       },
-      PowerLineFrequency: 50,
+      PowerLineFrequency: 'n/a',
     }
     jsonDict[eeg_file.relativePath] = jsonObj
     validate.JSON(eeg_file, jsonDict, function(issues) {
@@ -331,6 +331,19 @@ describe('JSON', function() {
       BIDSVersion: '1.4.0',
       Authors: ['example author'],
       DatasetType: 'badenum',
+    }
+    jsonDict[dataset_description_file.relativePath] = jsonObj
+    validate.JSON(dataset_description_file, jsonDict, function(issues) {
+      assert(issues.length === 1 && issues[0].code == 55)
+    })
+  })
+
+  it('dataset_description.json should NOT validate with number in Authors', function() {
+    var jsonObj = {
+      Name: 'Example Name',
+      BIDSVersion: '1.4.0',
+      Authors: ['example author', 1],
+      DatasetType: 'raw',
     }
     jsonDict[dataset_description_file.relativePath] = jsonObj
     validate.JSON(dataset_description_file, jsonDict, function(issues) {
