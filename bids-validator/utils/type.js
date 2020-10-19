@@ -23,7 +23,6 @@ const associatedData = buildRegExp(associated_data_rules.associated_data)
 const anatData = buildRegExp(file_level_rules.anat)
 const anatDefacemaskData = buildRegExp(file_level_rules.anat_defacemask)
 const behavioralData = buildRegExp(file_level_rules.behavioral)
-const contData = buildRegExp(file_level_rules.cont)
 const petDataFile = buildRegExp(file_level_rules.pet_data)
 const petBloodDataFile = buildRegExp(file_level_rules.pet_blood_data)
 const dwiData = buildRegExp(file_level_rules.dwi)
@@ -236,10 +235,6 @@ export default {
       return conditionalMatch(funcBoldData, path)
     },
 
-    isCont: function(path) {
-      return conditionalMatch(contData, path)
-    },
-
     isPETData: function(path) {
       return conditionalMatch(petDataFile, path)
     },
@@ -260,7 +255,6 @@ export default {
         this.isIEEG(path) ||
         this.isBehavioral(path) ||
         this.isFuncBold(path) ||
-        this.isCont(path) ||
         this.isPETData(path) ||
         this.isPETBloodData(path)
       )
