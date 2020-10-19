@@ -40,7 +40,7 @@
   ],
   "blood": ["Time", "PlasmaActivity"],
   "misc": [],
-  "participants": ["participant_id", "age", "sex"],
+  "participants": ["participant_id"],
   "phenotype": ["participant_id"],
   "scans": ["acq_time", "filename"],
   "sessions": ["acq_time", "session_id"]

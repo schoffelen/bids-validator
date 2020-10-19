@@ -84,7 +84,7 @@ describe('JSON', function() {
       SoftwareFilters: {
         HighPass: { HalfAmplitudeCutOffHz: 1, RollOff: '6dB/Octave' },
       },
-      PowerLineFrequency: 50,
+      PowerLineFrequency: 'n/a',
     }
     jsonDict[eeg_file.relativePath] = jsonObj
     validate.JSON(eeg_file, jsonDict, function(issues) {
@@ -269,6 +269,96 @@ describe('JSON', function() {
     // validation should pass with no errors.
     validate.JSON(file, jsonDict, issues => {
       assert.deepEqual(issues, [])
+    })
+  })
+
+  var genetic_info_file = {
+    name: 'genetic_info.json',
+    relativePath: '/genetic_info.json',
+  }
+
+  it('sample genetic_info.json should parse', function() {
+    var jsonObj = {
+      GeneticLevel: ['Genetic'],
+      AnalyticalApproach: ['SNP Genotypes'],
+      SampleOrigin: 'brain',
+      TissueOrigin: 'gray matter',
+      CellType: 'neuron',
+      BrainLocation: '[-30 -15 10]',
+    }
+    jsonDict[genetic_info_file.relativePath] = jsonObj
+    validate.JSON(genetic_info_file, jsonDict, function(issues) {
+      assert.deepEqual(issues, [])
+    })
+  })
+
+  it('genetic_info.json should use limited vocabulary for sample origin', function() {
+    var jsonObj = {
+      GeneticLevel: ['Genetic'],
+      AnalyticalApproach: ['SNP Genotypes'],
+      SampleOrigin: 'not_from_around_here',
+      TissueOrigin: 'gray matter',
+      CellType: 'neuron',
+      BrainLocation: '[-30 -15 10]',
+    }
+    jsonDict[genetic_info_file.relativePath] = jsonObj
+    validate.JSON(genetic_info_file, jsonDict, function(issues) {
+      assert(issues.length === 1 && issues[0].code == 55)
+    })
+  })
+
+  var dataset_description_file = {
+    name: 'dataset_description.json',
+    relativePath: '/dataset_description.json',
+  }
+
+  it('dataset_description.json should validate with enum of DatasetType', function() {
+    var jsonObj = {
+      Name: 'Example Name',
+      BIDSVersion: '1.4.0',
+      Authors: ['example author'],
+      DatasetType: 'raw',
+    }
+    jsonDict[dataset_description_file.relativePath] = jsonObj
+    validate.JSON(dataset_description_file, jsonDict, function(issues) {
+      assert(issues.length === 0)
+    })
+  })
+
+  it('dataset_description.json should NOT validate with wrong enum of DatasetType', function() {
+    var jsonObj = {
+      Name: 'Example Name',
+      BIDSVersion: '1.4.0',
+      Authors: ['example author'],
+      DatasetType: 'badenum',
+    }
+    jsonDict[dataset_description_file.relativePath] = jsonObj
+    validate.JSON(dataset_description_file, jsonDict, function(issues) {
+      assert(issues.length === 1 && issues[0].code == 55)
+    })
+  })
+
+  it('dataset_description.json should NOT validate with number in Authors', function() {
+    var jsonObj = {
+      Name: 'Example Name',
+      BIDSVersion: '1.4.0',
+      Authors: ['example author', 1],
+      DatasetType: 'raw',
+    }
+    jsonDict[dataset_description_file.relativePath] = jsonObj
+    validate.JSON(dataset_description_file, jsonDict, function(issues) {
+      assert(issues.length === 1 && issues[0].code == 55)
+    })
+  })
+
+  it('dataset_description.json should validate with only required fields, no recommended', function() {
+    var jsonObj = {
+      Name: 'Example Name',
+      BIDSVersion: '1.4.0',
+    }
+    jsonDict[dataset_description_file.relativePath] = jsonObj
+    validate.JSON(dataset_description_file, jsonDict, function(issues) {
+      assert(issues.length === 0)
     })
   })
 })

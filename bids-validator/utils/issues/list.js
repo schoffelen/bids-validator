@@ -466,7 +466,7 @@ export default {
     key: 'ACQTIME_FMT',
     severity: 'error',
     reason:
-      'Entries in the "acq_time" column of _scans.tsv should be expressed in the following format YYYY-MM-DDTHH:mm:ss (year, month, day, hour (24h), minute, second; this is equivalent to the RFC3339 “date-time” format. ',
+      'Entries in the "acq_time" column of _scans.tsv should be expressed in the following format YYYY-MM-DDTHH:mm:ss[.000000] (year, month, day, hour (24h), minute, second, and optionally fractional second; this is equivalent to the RFC3339 "date-time" format.',
   },
   85: {
     key: 'SUSPICIOUSLY_LONG_EVENT_DESIGN',
@@ -703,9 +703,39 @@ export default {
     reason:
       'Status column in channels.tsv files must contain only one of two values: good or bad. Per the BIDS spec: (https://bids-specification.readthedocs.io/en/stable/04-modality-specific-files/04-intracranial-electroencephalography.html#channels-description-_channelstsv).',
   },
-  126: {
-    key: 'CHANNELS_COLUMN_STATUS',
+  128: {
+    key: 'NO_GENETIC_DATABASE',
     severity: 'error',
-    reason: 'This is a test error for PET scan blood data!',
+    reason:
+      'A genetic_info.json file is present but no Database field present in Genetics object in dataset_description.json.',
   },
+  129: {
+    key: 'SCANS_FILENAME_NOT_MATCH_DATASET',
+    severity: 'error',
+    reason:
+      'The filename in scans.tsv file does not match what is present in the BIDS dataset.',
+  },
+  130: {
+    key: 'CHANNELS_COLUMN_TYPE_UPPER_CASE',
+    severity: 'error',
+    reason: 'Type column in channels.tsv files should consist of upper-case characters.'
+  },
+  131: {
+    key: 'CHANNELS_COLUMN_TYPE',
+    severity: 'error',
+    reason: 'Type column in channels.tsv files should only consist of values allowed in the specification for MEG/EEG/iEEG data.'
+  },
+  132: {
+    key: 'HED_VERSION_NOT_DEFINED',
+    severity: 'warning',
+    reason:
+      "You should define 'HEDVersion' for this file. If you don't provide this information, the HED validation will use the latest version available.",
+  },
+  133: {
+    key: 'CONTINOUS_RECORDING_MISSING_JSON',
+    severity: 'error',
+    reason:
+      "Continous recording data files are required to have an associated JSON metadata file.",
+  }
+
 }
